@@ -33,7 +33,7 @@
         {% endfor %}
     </div>
     <div class="form-floating">
-        {{ form.password_again(type="password_again", class="form-control", id="floatingPasswordAgain", placeholder="Password again") }}
+        {{ form.password_again(type="password", class="form-control", id="floatingPasswordAgain", placeholder="Password again") }}
         <label for="floatingPasswordAgain">Повторить пароль</label>
         {% for error in form.password_again.errors %}
             <div class="alert alert-danger" role="alert">

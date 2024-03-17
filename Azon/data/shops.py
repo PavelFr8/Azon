@@ -3,13 +3,12 @@ import sqlalchemy as sa
 import sqlalchemy.orm as orm
 
 
-class Item(SqlAlchemyBase):
-    __tablename__ = 'items'
+class Shop(SqlAlchemyBase):
+    __tablename__ = 'shops'
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     name = sa.Column(sa.String, nullable=False)
-    price = sa.Column(sa.Integer, nullable=False)
-    about = sa.Column(sa.String, nullable=False)
+    about = sa.Column(sa.String, nullable=True)
     img = sa.Column(sa.LargeBinary, nullable=False)
-    seller_id = sa.Column(sa.Integer, sa.ForeignKey("shops.id"))
+    items = sa.Column(sa.String, nullable=True)
 
-    shop = orm.relationship('Shop')
+    item = orm.relationship('Item', back_populates='shop')

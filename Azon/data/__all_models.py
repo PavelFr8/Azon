@@ -1,3 +1,3 @@
 from . import users
-from. import sellers
+from . import shops
 from. import items

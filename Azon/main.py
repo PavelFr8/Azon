@@ -1,8 +1,9 @@
 from flask import Flask, render_template, redirect, request, make_response, session, abort
 from data import db_session
 from data.users import User
+from data.shops import Shop
 from forms.registerform import RegisterForm
-import datetime
+from forms.shopform import ShopForm
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from forms.loginform import LoginForm
 
@@ -63,6 +64,29 @@ def login():
 def logout():
     logout_user()
     return redirect('/')
+
+
+@app.route('/shop/about')
+@login_required
+def shop_about():
+    return render_template('shop-about.html', title='Стать продавцом')
+
+
+@app.route('/shop/register', methods=['POST', 'GET'])
+@login_required
+def shop_register():
+    form = ShopForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        shop = Shop(
+            name=form.name.data,
+            about=form.about.data,
+            img=form.img.data,
+        )
+        db_sess.add(shop)
+        db_sess.commit()
+        return redirect('/login')
+    return render_template('shop_register.html', title='Регистрация магазина', form=form)
 
 
 if __name__ == '__main__':
