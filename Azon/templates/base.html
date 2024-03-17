@@ -13,23 +13,25 @@
     <div class="container">
       <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
         <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
-          <img src="{{ url_for('static', filename='img/logo.png') }}" width="200px">
+          <img src="{{ url_for('static', filename='img/header/logo.png') }}" height="70px">
         </a>
 
-        <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0 fs-6 fw-bold">
+        <ul class="nav col-12 col-lg-auto me-lg-auto mb-1 justify-content-center mb-md-0 fs-6 fw-bold">
           <li><a href="/about" class="nav-link px-2 link-body-emphasis">О нас</a></li>
           <li><a href="#" class="nav-link px-2 link-body-emphasis">Продавцы</a></li>
           <li><a href="#" class="nav-link px-2 link-body-emphasis">Категории</a></li>
-          <li><a href="#" class="px-2 btn btn-primary">Стать продавцом</a></li>
+          <li><a href="/seller/register" class="px-2 btn btn-primary">Стать продавцом</a></li>
         </ul>
 
-        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+        <form class="col-1 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
           <input type="search" class="form-control" placeholder="Поиск" aria-label="Search">
         </form>
+
+        <a href="#" class="col-1 col-lg-auto mb-3 mb-lg-0 me-lg-3"><img src="{{ url_for('static', filename='img/header/shopping_cart.svg') }}" alt="mdo" width="32" height="32"></a>
         {% if current_user.is_authenticated %}
         <div class="dropdown text-end">
           <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+            <img src="{{ url_for('static', filename='img/header/user.png') }}" alt="mdo" width="32" height="32" class="rounded-circle">
           </a>
           <ul class="dropdown-menu text-small">
             <li><a class="dropdown-item" href="#">Профиль</a></li>
