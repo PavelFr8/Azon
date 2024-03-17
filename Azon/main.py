@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, request, make_response, session, abort
 from data import db_session
 from data.users import User
-from forms.user import RegisterForm
+from forms.registerform import RegisterForm
 import datetime
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from forms.loginform import LoginForm
@@ -30,7 +30,6 @@ def register():
             return render_template('register.html', title='Регистрация', form=form,
                                    message='Такой пользователь уже есть')
         user = User(
-            name=form.name.data,
             email=form.email.data
         )
         user.set_password(form.password.data)
@@ -55,7 +54,7 @@ def login():
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
             return redirect('/')
-        return render_template('login.html', message='Неверный логин или пароль', form=form)
+        return render_template('login.html', title='Авторизация', message='Неверный логин или пароль', form=form)
     return render_template('login.html', title='Авторизация', form=form)
 
 
