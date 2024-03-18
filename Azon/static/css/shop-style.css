@@ -25,7 +25,7 @@
     margin: auto;
 }
 .part3 {
-    background: linear-gradient(5deg, #7e9ede 23.07%, #97d0ff 70%, #ffffff 70%);
+    background: linear-gradient(5deg, #3773ec 23.07%, #5989b0 70%, #ffffff 70%);
     text-align: center;
 }
 .text1-3 {
@@ -33,6 +33,14 @@
     margin-top: 130px;
     font-weight: 800;
     text-align: center;
+    color: white;
+}
+.text1-8 {
+    margin-bottom: 50px;
+    margin-top: 130px;
+    font-weight: 800;
+    text-align: center;
+
 }
 .text2-3 {
     border-radius:30px;
@@ -98,14 +106,11 @@
     bottom: 0;
     right: 0;
 }
-.f23{
-    filter: hue-rotate(240deg);
-}
 .text555{
     margin-top: 90px;
 }
 .part4 {
-    background: linear-gradient(-20deg,  #ffffff 45.63%, #7e9ede 45.64%);
+    background: linear-gradient(-20deg,  #ffffff 45.63%, #3773ec 45.64%);
 }
 .kart4 {
     border-radius: 15px;
@@ -226,6 +231,17 @@
     .v234 {
         display: block;
         width: 100%;
+    }
+    .text1-3 {
+    color: black;
+}
+}
 
+@media(max-width: 991px)
+{
+.v234 {
+    display: block;
+    width: 100%;
+    margin-top: 20px;
 }
 }

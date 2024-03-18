@@ -12,8 +12,9 @@ class User(SqlAlchemyBase, UserMixin):
     email = sa.Column(sa.String, unique=True, nullable=True, index=True)
     hashed_password = sa.Column(sa.String, nullable=True)
     shopping_cart = sa.Column(sa.String, nullable=True)
-    is_seller = sa.Column(sa.Boolean, default=False)
     created_date = sa.Column(sa.DateTime, default=datetime.datetime.now)
+
+    shop = orm.relationship('Shop', back_populates='user')
 
     def __repr__(self) -> str:
         return f'<{self.id}> {self.email}'

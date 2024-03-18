@@ -7,4 +7,4 @@ class ShopForm(FlaskForm):
     name = StringField('Название', validators=[DataRequired()])
     about = TextAreaField('Описание')
     img = FileField('Фото', validators=[DataRequired()])
-    submit = SubmitField('Вход')
+    submit = SubmitField('Зарегистрировать')

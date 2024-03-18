@@ -1,4 +1,6 @@
 from flask import Flask, render_template, redirect, request, make_response, session, abort
+from werkzeug.utils import secure_filename
+from data.allowes_file import allowed_file
 from data import db_session
 from data.users import User
 from data.shops import Shop
@@ -6,9 +8,11 @@ from forms.registerform import RegisterForm
 from forms.shopform import ShopForm
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from forms.loginform import LoginForm
+import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandex_123'
+# app.config['DEBUG'] = True
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -72,21 +76,30 @@ def shop_about():
     return render_template('shop-about.html', title='Стать продавцом')
 
 
-@app.route('/shop/register', methods=['POST', 'GET'])
+@app.route('/shopregister', methods=['POST', 'GET'])
 @login_required
 def shop_register():
     form = ShopForm()
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
-        shop = Shop(
-            name=form.name.data,
-            about=form.about.data,
-            img=form.img.data,
-        )
-        db_sess.add(shop)
-        db_sess.commit()
-        return redirect('/login')
-    return render_template('shop_register.html', title='Регистрация магазина', form=form)
+        img_file = request.files['img']
+        if img_file and allowed_file(img_file.filename):
+            img_binary = img_file.read()
+            db_sess = db_session.create_session()
+            shop = Shop(
+                name=form.name.data,
+                about=form.about.data,
+                img=img_binary,
+                owner_id=current_user.id
+            )
+            db_sess.add(shop)
+            db_sess.commit()
+            return redirect('/')
+        else:
+            return render_template('shop-register.html',
+                                   title='Регистрация магазина',
+                                   message='Недопустимое расширение файла изображения. Разрешены только PNG, JPG и JPEG'
+                                   , form=form)
+    return render_template('shop-register.html', title='Регистрация магазина', form=form)
 
 
 if __name__ == '__main__':
