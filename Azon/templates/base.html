@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-<header class="p-9 mb-9 border-bottom">
+<header class="p-9 mb-9 border-bottom" style="padding-bottom: 5px;">
     <div class="container">
       <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
         <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
@@ -35,8 +35,10 @@
             <img src="{{ url_for('static', filename='img/header/user.png') }}" alt="mdo" width="32" height="32" class="rounded-circle">
           </a>
           <ul class="dropdown-menu text-small">
-            <li><a class="dropdown-item" href="#">Профиль</a></li>
-            <li><a class="dropdown-item" href="#">Добавить товар</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('profile') }}">Профиль</a></li>
+            {% for item in shops %}
+            <li><a class="dropdown-item" href="shop/{{ item.id }}">{{ item.name }}</a></li>
+            {% endfor %}
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="/logout">Выйти</a></li>
           </ul>
@@ -48,7 +50,7 @@
         {% endif %}
       </div>
     </div>
-  </header>
+</header>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 <!-- Begin page content -->
 <main role="main" class="container">

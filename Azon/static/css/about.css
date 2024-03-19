@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap');
-* {
+.xdd {
     font-family: "Monterrat", sans-serif;
     padding: 0;
     margin: 0;
@@ -7,12 +7,12 @@
 }
 
   .hero-section {
-    background: linear-gradient(5deg, #3165ba 23.07%, #549cef 70%, #FFFFFF 70%);
+    background: linear-gradient(184deg, rgba(255,255,255,1) 24%, rgba(84,156,239,1) 26%, rgba(49,101,186,1) 53%);
     color: #fff;
-    padding: 50px 0;
     text-align: center;
-    height: 50vh;
   }
+  .e {
+   margin-top: 150px;}
 
    .text1 {
     font-size: 36px;
@@ -20,9 +20,6 @@
     text-align: center;
     margin-bottom: 45px;
     color: #fff;
-  }
-  .e{
-    margin-top: 200px;
   }
   .r{
     margin-bottom: 40px;
@@ -47,7 +44,7 @@
   .about-section {
     padding: 50px 0;
     padding-bottom: 80vh;
-    background: linear-gradient(-6deg,  #FFFFFF 45.63%, #3165ba 45.64%);
+    background: linear-gradient(-6deg, rgba(255,255,255,1) 45%, rgba(84,156,239,1) 46%, rgba(49,101,186,1) 74%);
     height: 50vh;
   }
 
@@ -152,7 +149,7 @@
         margin-top: 40px;
     }
     .e {
-        margin-top: 150px;
+        padding-top: 150px;
     }
     .r {
         margin-bottom: 20px;

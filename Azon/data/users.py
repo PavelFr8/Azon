@@ -12,6 +12,7 @@ class User(SqlAlchemyBase, UserMixin):
     email = sa.Column(sa.String, unique=True, nullable=True, index=True)
     hashed_password = sa.Column(sa.String, nullable=True)
     shopping_cart = sa.Column(sa.String, nullable=True)
+    shopping_counter = sa.Column(sa.Integer, nullable=True)
     created_date = sa.Column(sa.DateTime, default=datetime.datetime.now)
 
     shop = orm.relationship('Shop', back_populates='user')
@@ -24,3 +25,6 @@ class User(SqlAlchemyBase, UserMixin):
 
     def check_password(self, password):
         return check_password_hash(self.hashed_password, password)
+
+    def update_password(self, new_password):
+        self.set_password(new_password)
