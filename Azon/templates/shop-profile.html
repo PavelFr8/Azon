@@ -2,20 +2,18 @@
 
 {% block content %}
 <main class="form-signin w-100 m-auto">
-    <h1 class="h3 mb-3 font-weight-bolder fs-1" style="display: flex; width: 70%; margin: auto;">{{ shop.name }}</h1>
+    <h1 class="h3 mb-3 font-weight-bolder fs-1" style="margin: 20px auto; text-align: center;">{{ shop.name }}</h1>
     <div class="card" style="display: flex; width: 70%; margin: auto;">
         <div class="card-body">
             <h2 class="card-title font-weight-bold">Логотип магазина</h2>
-            <img src="data:image/jpeg;base64,{{ logo_data }}" alt="Логотип магазина">
+            <img src="data:image/jpeg;base64,{{ logo_data }}" alt="Логотип магазина" width="220" height="220" class="rounded">
             <br>
             <h2 class="card-title font-weight-bold">О магазине</h2>
             <p class="font-weight-normal fs-5">{{ shop.about }}</p>
             <br>
-            <h2 class="card-title font-weight-bold">Владелец</h2>
-            <p class="font-weight-normal fs-5">{{ shop.user.name }}</p>
-            <br>
             <h2 class="card-title font-weight-bold">Контактная информация</h2>
             <p class="font-weight-normal fs-5">{{ shop.user.email }}</p>
+                        <a href="{{ url_for('shop_change', id=shop.id) }}" class="btn btn-primary" type="button">Изменить данные</a>
         </div>
     </div>
 </main>
@@ -23,7 +21,7 @@
 <div class="cart">
     <div class="card">
         <div class="card-body">
-            <h2 class="card-title">Корзина</h2>
+            <h2 class="card-title">Товары</h2>
             <!-- Здесь будет содержимое корзины с текущими товарами -->
         </div>
     </div>

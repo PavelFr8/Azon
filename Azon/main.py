@@ -8,6 +8,7 @@ from forms.shopform import ShopForm
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from forms.loginform import LoginForm
 from forms.userchange import UserChangeForm
+from forms.shopchange import ShopChangeForm
 import base64
 
 app = Flask(__name__)
@@ -108,7 +109,8 @@ def shop_register():
                 name=form.name.data,
                 about=form.about.data,
                 img=img_binary,
-                owner_id=current_user.id
+                owner_id=current_user.id,
+                contact=current_user.email
             )
             db_sess.add(shop)
             db_sess.commit()
@@ -167,7 +169,41 @@ def shop_profile(id):
     # Преобразуем бинарные данные логотипа в base64
     logo_data = base64.b64encode(shop.img).decode('utf-8')
 
-    return render_template('shop-profile.html', shop=shop, title=f'Профиль магазина {shop.name}', logo_data=logo_data)
+    return render_template('shop-profile.html', shop=shop, title=f'Профиль магазина "{shop.name}"', logo_data=logo_data)
+
+
+@app.route('/shop/<int:id>', methods=['GET', 'POST'])
+@login_required
+def shop_change(id: int):
+    form = ShopChangeForm()
+    if request.method == 'GET':
+        db_sess = db_session.create_session()
+        shop = db_sess.query(Shop).filter(Shop.id == id, Shop.owner_id == current_user.id).first()
+        logo_data = base64.b64encode(shop.img).decode('utf-8')
+        if shop:
+            form.name.data = shop.name
+            form.about.data = shop.about
+            form.contact.data = shop.contact
+            form.img.data = logo_data
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        shop = db_sess.query(Shop).filter(Shop.id == id, Shop.owner_id == current_user.id).first()
+        img_file = request.files['img']
+        if shop:
+            if img_file and allowed_file(img_file.filename):
+                img_binary = img_file.read()
+                shop.name = form.name.data
+                shop.about = form.about.data
+                shop.contact = form.contact.data
+                shop.img = img_binary
+                db_sess.commit()
+                return redirect(f'/shop_profile/{id}')
+        else:
+            abort(404)
+
+    return render_template('shop-change.html', title='Изменение данных', form=form)
 
 
 if __name__ == '__main__':

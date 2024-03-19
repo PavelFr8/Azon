@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/shopreg.css') }}">
+</head>
+<main class="form-signin w-100 m-auto">
+<form action="" method="post" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <a href="/"><img src="{{ url_for('static', filename='img/header/logo.png') }}" width="200px"></a>
+    <h1 class="h3 mb-3 fw-normal">Изменение данных</h1>
+
+    <div class="form-floating">
+        {{ form.name(class="form-control", id="floatingInput", placeholder="name") }}
+        <label for="floatingInput">Название магазина</label>
+        {% for error in form.name.errors %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        {% endfor %}
+    </div>
+    <div class="form-floating">
+        {{ form.about(class="form-control", id="floatingPassword", style="height: 400px") }}
+        <label for="floatingPassword" class="fs-5">Описание магазина</label>
+        {% for error in form.about.errors %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        {% endfor %}
+    </div>
+    <div class="form-floating">
+        {{ form.contact(class="form-control", id="floatingPassword") }}
+        <label for="floatingPassword" class="fs-5">Контактные данные</label>
+        {% for error in form.contact.errors %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        {% endfor %}
+    </div>
+    <div class="form-group">
+        <label for="floatingPasswordAgain" class="fs-4">Новый логотип магазина</label>
+        {{ form.img(class="form-control-file", id="floatingPasswordAgain") }}
+
+        {% for error in form.img.errors %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        {% endfor %}
+    </div>
+    <p>{{ form.submit(class="btn btn-primary w-100 py-2 fs-5 fw-bold", type="submit") }}</p>
+    <div>{{ message }}</div>
+  </form>
+</main>
+{% endblock %}
