@@ -29,7 +29,7 @@
         </form>
 
         {% if current_user.is_authenticated %}
-                <a href="#" class="col-1 col-lg-auto mb-0 mb-lg-0 me-lg-3 ttt"><img src="{{ url_for('static', filename='img/header/shopping_cart.svg') }}" alt="mdo" width="32" height="32"></a>
+        <a href="#" class="col-1 col-lg-auto mb-0 mb-lg-0 me-lg-3 ttt"><img src="{{ url_for('static', filename='img/header/shopping_cart.svg') }}" alt="mdo" width="32" height="32"></a>
         <div class="dropdown text-end">
           <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
             <img src="{{ url_for('static', filename='img/header/user.png') }}" alt="mdo" width="32" height="32" class="rounded-circle">

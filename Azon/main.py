@@ -44,6 +44,11 @@ def register():
     return render_template('register.html', title='Регистрация', form=form)
 
 
+@app.route('/about')
+def about():
+    return render_template('about.html', title='О нас')
+
+
 @login_manager.user_loader
 def load_user(user_id):
     db_sess = db_session.create_session()
