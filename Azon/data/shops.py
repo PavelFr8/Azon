@@ -6,7 +6,7 @@ import sqlalchemy.orm as orm
 class Shop(SqlAlchemyBase):
     __tablename__ = 'shops'
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
-    name = sa.Column(sa.String, nullable=False)
+    name = sa.Column(sa.String, nullable=False, unique=True)
     about = sa.Column(sa.String, nullable=True)
     img = sa.Column(sa.LargeBinary, nullable=False)
     items = sa.Column(sa.String, nullable=True)

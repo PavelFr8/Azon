@@ -8,23 +8,29 @@ from forms.shopform import ShopForm
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from forms.loginform import LoginForm
 from forms.userchange import UserChangeForm
+import base64
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'yandex_123'
+app.config['SECRET_KEY'] = 'q2345rtghji98765e'
 # app.config['DEBUG'] = True
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 
 
-@app.route('/')
-def index():
+@app.context_processor
+def inject_shops():
     if current_user.is_authenticated:
         sess = db_session.create_session()
         shops = sess.query(Shop).filter(Shop.owner_id == current_user.id).all()
-        return render_template("index.html", shops=shops, title='Azon')
     else:
-        return render_template("index.html", title='Azon')
+        shops = []
+    return dict(shops=shops)
+
+
+@app.route('/')
+def index():
+    return render_template("index.html", title='Azon')
 
 
 @app.route('/register', methods=['POST', 'GET'])
@@ -90,6 +96,10 @@ def shop_about():
 def shop_register():
     form = ShopForm()
     if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        if db_sess.query(Shop).filter(Shop.name == form.name.data).first():
+            return render_template('shop-register.html', title='Регистрация', form=form,
+                                   message='Магазин с таким названием уже существует')
         img_file = request.files['img']
         if img_file and allowed_file(img_file.filename):
             img_binary = img_file.read()
@@ -146,6 +156,18 @@ def user_change(id: int):
             abort(404)
 
     return render_template('user-change.html', title='Ваш профиль', form=form)
+
+
+@app.route('/shop_profile/<int:id>')
+@login_required
+def shop_profile(id):
+    db_sess = db_session.create_session()
+    shop = db_sess.query(Shop).filter(Shop.id == id, Shop.owner_id == current_user.id).first()
+
+    # Преобразуем бинарные данные логотипа в base64
+    logo_data = base64.b64encode(shop.img).decode('utf-8')
+
+    return render_template('shop-profile.html', shop=shop, title=f'Профиль магазина {shop.name}', logo_data=logo_data)
 
 
 if __name__ == '__main__':
