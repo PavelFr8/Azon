@@ -238,31 +238,34 @@ def shop_change(id: int):
 
 
 # Регистрация нового товара
-@app.route('/itemregister', methods=['POST', 'GET'])
+@app.route('/itemregister/<int:id>', methods=['POST', 'GET'])
 @login_required
-def item_register():
+def item_register(id):
     form = ItemForm()
     if form.validate_on_submit():
         img_file = request.files['img']
         if img_file and allowed_file(img_file.filename):  # проверка, что файл является фото
             img_binary = img_file.read()
             db_sess = db_session.create_session()
-            shop = Shop(
+            category = f'{form.category1.data}, {form.category2.data}, {form.category3.data}'
+            print(category)
+            item = Item(
                 name=form.name.data,
+                price=form.price.data,
                 about=form.about.data,
                 img=img_binary,
-                owner_id=current_user.id,
-                contact=current_user.email
+                category_id=category,
+                seller_id=id
             )
-            db_sess.add(shop)
+            db_sess.add(item)
             db_sess.commit()
             return redirect('/')
         else:
-            return render_template('shop-register.html',
-                                   title='Регистрация магазина',
+            return render_template('item-register.html',
+                                   title='Добавление нового товара',
                                    message='Недопустимое расширение файла изображения. Разрешены только PNG, JPG и JPEG'
                                    , form=form)
-    return render_template('shop-register.html', title='Регистрация магазина', form=form)
+    return render_template('item-register.html', title='Добавление нового товара', form=form)
 '''
 
 # Редактирование данных о магазине

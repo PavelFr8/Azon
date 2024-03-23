@@ -18,10 +18,8 @@
 </main>
     <div class="card" style="display: flex; width: 78%; margin: 50px auto;">
         <div class="card-body">
-            <h2 class="card-title">Товары <a class="btn btn-primary" style="margin-left: 20px;">Добавить</a></h2>
-            <main role="main" class="container">
-                {% block content %}{% endblock %}
-            </main>
+            <h2 class="card-title">Товары <a href="{{ url_for('item_register', id=shop.id) }}" class="btn btn-primary" style="margin-left: 20px;">Добавить</a></h2>
+
         </div>
     </div>
 {% endblock %}
