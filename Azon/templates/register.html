@@ -40,6 +40,13 @@
                 {{ error }}
             </div>
         {% endfor %}
+        <form method="POST">
+            <input type="text" id="address" name="address">
+            <button type="submit">Сохранить</button>
+        </form>
+        {% if map_url %}
+            <img src="{{ map_url }}" alt="Map">
+        {% endif %}
     </div>
     <p>{{ form.submit(class="btn btn-primary w-100 py-2 fs-5 fw-bold", type="submit") }}</p>
     <p>Уже есть аккаунт? <a href="/login" class="link-offset-1">Войти</a></p>
