@@ -10,8 +10,8 @@ class Shop(SqlAlchemyBase):
     about = sa.Column(sa.String, nullable=True, default='Описание магазина')
     img = sa.Column(sa.LargeBinary, nullable=False)
     contact = sa.Column(sa.String, nullable=True)
-    items = sa.Column(sa.String, nullable=True)
+    shop_items = sa.Column(sa.String, nullable=True)
     owner_id = sa.Column(sa.Integer, sa.ForeignKey("users.id"))
 
-    item = orm.relationship('Item', back_populates='shop')
+    items = orm.relationship('Item', back_populates='shop')
     user = orm.relationship('User')

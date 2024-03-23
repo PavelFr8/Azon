@@ -12,7 +12,7 @@ class User(SqlAlchemyBase, UserMixin):
     email = sa.Column(sa.String, unique=True, nullable=False, index=True)
     hashed_password = sa.Column(sa.String, nullable=False)
     shopping_cart = sa.Column(sa.String, nullable=True)
-    delivery_address = sa.Column(sa.String, nullable=True) # тут пустота true но надо будеть сделать false
+    delivery_address = sa.Column(sa.String, nullable=True)  # тут пустота true но надо будеть сделать false
     created_date = sa.Column(sa.DateTime, default=datetime.datetime.now)
 
     shop = orm.relationship('Shop', back_populates='user')

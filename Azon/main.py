@@ -243,10 +243,6 @@ def shop_change(id: int):
 def item_register():
     form = ItemForm()
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
-        if db_sess.query(Shop).filter(Shop.name == form.name.data).first():
-            return render_template('shop-register.html', title='Регистрация', form=form,
-                                   message='Магазин с таким названием уже существует')
         img_file = request.files['img']
         if img_file and allowed_file(img_file.filename):  # проверка, что файл является фото
             img_binary = img_file.read()
