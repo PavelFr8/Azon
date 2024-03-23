@@ -9,10 +9,10 @@ from flask_login import UserMixin
 class User(SqlAlchemyBase, UserMixin):
     __tablename__ = 'users'
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
-    email = sa.Column(sa.String, unique=True, nullable=True, index=True)
-    hashed_password = sa.Column(sa.String, nullable=True)
+    email = sa.Column(sa.String, unique=True, nullable=False, index=True)
+    hashed_password = sa.Column(sa.String, nullable=False)
     shopping_cart = sa.Column(sa.String, nullable=True)
-    shopping_counter = sa.Column(sa.Integer, nullable=True)
+    delivery_address = sa.Column(sa.String, nullable=True) # тут пустота true но надо будеть сделать false
     created_date = sa.Column(sa.DateTime, default=datetime.datetime.now)
 
     shop = orm.relationship('Shop', back_populates='user')

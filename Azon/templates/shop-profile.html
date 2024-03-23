@@ -2,11 +2,10 @@
 
 {% block content %}
 <main class="form-signin w-100 m-auto">
-    <h1 class="h3 mb-3 font-weight-bolder fs-1" style="margin: 20px auto; text-align: center;">{{ shop.name }}</h1>
+    <h1 class="h3 mb-3 font-weight-bolder fs-1" style="margin: 20px auto; text-align: center;"><img src="data:image/jpeg;base64,{{ logo_data }}" alt="Логотип магазина" width="175" height="100" class="rounded-3 border border-3 border-primary" style="margin-right: 40px;">{{ shop.name }}</h1>
     <div class="card" style="display: flex; width: 70%; margin: auto;">
         <div class="card-body">
-            <h2 class="card-title font-weight-bold">Логотип магазина</h2>
-            <img src="data:image/jpeg;base64,{{ logo_data }}" alt="Логотип магазина" width="220" height="220" class="rounded">
+            <h1>Информация</h1>
             <br>
             <h2 class="card-title font-weight-bold">О магазине</h2>
             <p class="font-weight-normal fs-5">{{ shop.about }}</p>
@@ -17,13 +16,12 @@
         </div>
     </div>
 </main>
-
-<div class="cart">
-    <div class="card">
+    <div class="card" style="display: flex; width: 78%; margin: 50px auto;">
         <div class="card-body">
-            <h2 class="card-title">Товары</h2>
-            <!-- Здесь будет содержимое корзины с текущими товарами -->
+            <h2 class="card-title">Товары <a class="btn btn-primary" style="margin-left: 20px;">Добавить</a></h2>
+            <main role="main" class="container">
+                {% block content %}{% endblock %}
+            </main>
         </div>
     </div>
-</div>
 {% endblock %}

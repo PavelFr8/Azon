@@ -1,14 +1,16 @@
-from flask import Flask, render_template, redirect, request, make_response, session, abort
+from flask import Flask, render_template, redirect, request, abort
 from data.allowes_file import allowed_file
 from data import db_session
 from data.users import User
 from data.shops import Shop
+from data.items import Item
 from forms.registerform import RegisterForm
 from forms.shopform import ShopForm
-from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from forms.loginform import LoginForm
 from forms.userchange import UserChangeForm
 from forms.shopchange import ShopChangeForm
+from forms.itemform import ItemForm
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 import base64
 
 app = Flask(__name__)
@@ -19,6 +21,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
+# shops теперь типо глобальная переменная для жижи
 @app.context_processor
 def inject_shops():
     if current_user.is_authenticated:
@@ -29,11 +32,34 @@ def inject_shops():
     return dict(shops=shops)
 
 
+@login_manager.user_loader
+def load_user(user_id):
+    db_sess = db_session.create_session()
+    return db_sess.query(User).get(user_id)
+
+
+# Главная страница
 @app.route('/')
 def index():
     return render_template("index.html", title='Azon')
 
 
+# Страница "Стать продавцом"
+@app.route('/shop/about')
+@login_required
+def shop_about():
+    return render_template('shop-about.html', title='Стать продавцом')
+
+
+# Страница "О нас"
+@app.route('/about')
+def about():
+    return render_template('about.html', title='О нас')
+
+
+#              !!!!! БЛОК СВЯЗАННЫЙ С ПОЛЬЗОВАТЕЛЕМ !!!!!
+
+# Регистрация пользователя
 @app.route('/register', methods=['POST', 'GET'])
 def register():
     form = RegisterForm()
@@ -55,17 +81,7 @@ def register():
     return render_template('register.html', title='Регистрация', form=form)
 
 
-@app.route('/about')
-def about():
-    return render_template('about.html', title='О нас')
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    db_sess = db_session.create_session()
-    return db_sess.query(User).get(user_id)
-
-
+# Логин
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     form = LoginForm()
@@ -79,6 +95,7 @@ def login():
     return render_template('login.html', title='Авторизация', form=form)
 
 
+# Выход из аккаунта
 @app.route('/logout')
 @login_required
 def logout():
@@ -86,43 +103,7 @@ def logout():
     return redirect('/')
 
 
-@app.route('/shop/about')
-@login_required
-def shop_about():
-    return render_template('shop-about.html', title='Стать продавцом')
-
-
-@app.route('/shopregister', methods=['POST', 'GET'])
-@login_required
-def shop_register():
-    form = ShopForm()
-    if form.validate_on_submit():
-        db_sess = db_session.create_session()
-        if db_sess.query(Shop).filter(Shop.name == form.name.data).first():
-            return render_template('shop-register.html', title='Регистрация', form=form,
-                                   message='Магазин с таким названием уже существует')
-        img_file = request.files['img']
-        if img_file and allowed_file(img_file.filename):
-            img_binary = img_file.read()
-            db_sess = db_session.create_session()
-            shop = Shop(
-                name=form.name.data,
-                about=form.about.data,
-                img=img_binary,
-                owner_id=current_user.id,
-                contact=current_user.email
-            )
-            db_sess.add(shop)
-            db_sess.commit()
-            return redirect('/')
-        else:
-            return render_template('shop-register.html',
-                                   title='Регистрация магазина',
-                                   message='Недопустимое расширение файла изображения. Разрешены только PNG, JPG и JPEG'
-                                   , form=form)
-    return render_template('shop-register.html', title='Регистрация магазина', form=form)
-
-
+# Личный профиль пользователя
 @app.route('/profile')
 @login_required
 def profile():
@@ -131,6 +112,7 @@ def profile():
     return render_template('profile.html', user=user, title='Ваш профиль')
 
 
+# Обновление пароля аккаунта
 @app.route('/user/<int:id>', methods=['GET', 'POST'])
 @login_required
 def user_change(id: int):
@@ -160,6 +142,42 @@ def user_change(id: int):
     return render_template('user-change.html', title='Ваш профиль', form=form)
 
 
+#              !!!!! БЛОК СВЯЗАННЫЙ С МАГАЗИНОМ !!!!!
+
+
+# Регистрация нового магазина
+@app.route('/shopregister', methods=['POST', 'GET'])
+@login_required
+def shop_register():
+    form = ShopForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        if db_sess.query(Shop).filter(Shop.name == form.name.data).first():
+            return render_template('shop-register.html', title='Регистрация', form=form,
+                                   message='Магазин с таким названием уже существует')
+        img_file = request.files['img']
+        if img_file and allowed_file(img_file.filename):  # проверка, что файл является фото
+            img_binary = img_file.read()
+            db_sess = db_session.create_session()
+            shop = Shop(
+                name=form.name.data,
+                about=form.about.data,
+                img=img_binary,
+                owner_id=current_user.id,
+                contact=current_user.email
+            )
+            db_sess.add(shop)
+            db_sess.commit()
+            return redirect('/')
+        else:
+            return render_template('shop-register.html',
+                                   title='Регистрация магазина',
+                                   message='Недопустимое расширение файла изображения. Разрешены только PNG, JPG и JPEG'
+                                   , form=form)
+    return render_template('shop-register.html', title='Регистрация магазина', form=form)
+
+
+# Профиль магазина
 @app.route('/shop_profile/<int:id>')
 @login_required
 def shop_profile(id):
@@ -172,6 +190,7 @@ def shop_profile(id):
     return render_template('shop-profile.html', shop=shop, title=f'Профиль магазина "{shop.name}"', logo_data=logo_data)
 
 
+# Редактирование данных о магазине
 @app.route('/shop/<int:id>', methods=['GET', 'POST'])
 @login_required
 def shop_change(id: int):
@@ -179,6 +198,8 @@ def shop_change(id: int):
     if request.method == 'GET':
         db_sess = db_session.create_session()
         shop = db_sess.query(Shop).filter(Shop.id == id, Shop.owner_id == current_user.id).first()
+
+        # Преобразуем бинарные данные логотипа в base64
         logo_data = base64.b64encode(shop.img).decode('utf-8')
         if shop:
             form.name.data = shop.name
@@ -192,7 +213,7 @@ def shop_change(id: int):
         shop = db_sess.query(Shop).filter(Shop.id == id, Shop.owner_id == current_user.id).first()
         img_file = request.files['img']
         if shop:
-            if img_file and allowed_file(img_file.filename):
+            if img_file and allowed_file(img_file.filename):   # проверка, что файл является фото
                 img_binary = img_file.read()
                 shop.name = form.name.data
                 shop.about = form.about.data
@@ -200,11 +221,95 @@ def shop_change(id: int):
                 shop.img = img_binary
                 db_sess.commit()
                 return redirect(f'/shop_profile/{id}')
+            else:
+                return render_template('shop-change.html',
+                                       title='Изменение данных',
+                                       message='Недопустимое расширение файла изображения. Разрешены только '
+                                               'PNG, JPG и JPEG'
+                                       , form=form)
+
         else:
             abort(404)
 
     return render_template('shop-change.html', title='Изменение данных', form=form)
 
+
+#              !!!!! БЛОК СВЯЗАННЫЙ С ТОВАРАМИ !!!!!
+
+
+# Регистрация нового товара
+@app.route('/itemregister', methods=['POST', 'GET'])
+@login_required
+def item_register():
+    form = ItemForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        if db_sess.query(Shop).filter(Shop.name == form.name.data).first():
+            return render_template('shop-register.html', title='Регистрация', form=form,
+                                   message='Магазин с таким названием уже существует')
+        img_file = request.files['img']
+        if img_file and allowed_file(img_file.filename):  # проверка, что файл является фото
+            img_binary = img_file.read()
+            db_sess = db_session.create_session()
+            shop = Shop(
+                name=form.name.data,
+                about=form.about.data,
+                img=img_binary,
+                owner_id=current_user.id,
+                contact=current_user.email
+            )
+            db_sess.add(shop)
+            db_sess.commit()
+            return redirect('/')
+        else:
+            return render_template('shop-register.html',
+                                   title='Регистрация магазина',
+                                   message='Недопустимое расширение файла изображения. Разрешены только PNG, JPG и JPEG'
+                                   , form=form)
+    return render_template('shop-register.html', title='Регистрация магазина', form=form)
+'''
+
+# Редактирование данных о магазине
+@app.route('/shop/<int:id>', methods=['GET', 'POST'])
+@login_required
+def shop_change(id: int):
+    form = ShopChangeForm()
+    if request.method == 'GET':
+        db_sess = db_session.create_session()
+        shop = db_sess.query(Shop).filter(Shop.id == id, Shop.owner_id == current_user.id).first()
+
+        # Преобразуем бинарные данные логотипа в base64
+        logo_data = base64.b64encode(shop.img).decode('utf-8')
+        if shop:
+            form.name.data = shop.name
+            form.about.data = shop.about
+            form.contact.data = shop.contact
+            form.img.data = logo_data
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        shop = db_sess.query(Shop).filter(Shop.id == id, Shop.owner_id == current_user.id).first()
+        img_file = request.files['img']
+        if shop:
+            if img_file and allowed_file(img_file.filename):  # проверка, что файл является фото
+                img_binary = img_file.read()
+                shop.name = form.name.data
+                shop.about = form.about.data
+                shop.contact = form.contact.data
+                shop.img = img_binary
+                db_sess.commit()
+                return redirect(f'/shop_profile/{id}')
+            else:
+                return render_template('shop-change.html',
+                                       title='Изменение данных',
+                                       message='Недопустимое расширение файла изображения. Разрешены только '
+                                               'PNG, JPG и JPEG'
+                                       , form=form)
+
+        else:
+            abort(404)
+'''
 
 if __name__ == '__main__':
     db_session.global_init('db/db.db')
