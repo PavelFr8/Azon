@@ -74,11 +74,24 @@ def register():
         user = User(
             email=form.email.data
         )
+        if request.method == 'POST':
+            user_address = request.form.get('address')
+            map_url = show_map(user_address)
+            return render_template('register.html', map_url=map_url)
+        
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
         return redirect('/login')
     return render_template('register.html', title='Регистрация', form=form)
+
+@app.route('/register')
+def show_map(address):
+    api_key = '40d1649f-0493-4b70-98ba-98533de7710b'
+    url = f'https://static-maps.yandex.ru/1.x/?apikey={api_key}&lang=en_US&ll=37.620070,55.753630&z=10&l=map&pt={address},pm2dgl'
+    
+    return url
+
 
 
 # Логин
@@ -238,34 +251,31 @@ def shop_change(id: int):
 
 
 # Регистрация нового товара
-@app.route('/itemregister/<int:id>', methods=['POST', 'GET'])
+@app.route('/itemregister', methods=['POST', 'GET'])
 @login_required
-def item_register(id):
+def item_register():
     form = ItemForm()
     if form.validate_on_submit():
         img_file = request.files['img']
         if img_file and allowed_file(img_file.filename):  # проверка, что файл является фото
             img_binary = img_file.read()
             db_sess = db_session.create_session()
-            category = f'{form.category1.data}, {form.category2.data}, {form.category3.data}'
-            print(category)
-            item = Item(
+            shop = Shop(
                 name=form.name.data,
-                price=form.price.data,
                 about=form.about.data,
                 img=img_binary,
-                category_id=category,
-                seller_id=id
+                owner_id=current_user.id,
+                contact=current_user.email
             )
-            db_sess.add(item)
+            db_sess.add(shop)
             db_sess.commit()
             return redirect('/')
         else:
-            return render_template('item-register.html',
-                                   title='Добавление нового товара',
+            return render_template('shop-register.html',
+                                   title='Регистрация магазина',
                                    message='Недопустимое расширение файла изображения. Разрешены только PNG, JPG и JPEG'
                                    , form=form)
-    return render_template('item-register.html', title='Добавление нового товара', form=form)
+    return render_template('shop-register.html', title='Регистрация магазина', form=form)
 '''
 
 # Редактирование данных о магазине
