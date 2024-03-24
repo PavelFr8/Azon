@@ -404,6 +404,21 @@ def item_change(id: int):
     return render_template('item-register.html', title='Изменение данных', form=form)
 
 
+# Поиск по имени товара
+@app.route('/search')
+def search_item():
+    query = request.args.get('query')  # Получаем значение запроса из параметра 'query'
+    sess = db_session.create_session()
+    if query:
+        items = sess.query(Item).filter(Item.name.ilike(f'%{query}%')).all()  # Ищем товары по названию
+    else:
+        items = sess.query(Item).all()  # Ищем все товары
+    for item in items:
+        item.logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
+
+    return render_template("item.html", title='Результаты поиска', items=items, text=query)
+
+
 if __name__ == '__main__':
     db_session.global_init('db/db.db')
     sess = db_session.create_session()
