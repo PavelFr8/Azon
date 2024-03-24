@@ -61,9 +61,9 @@
                         <h2 class="card-text price">{{ item.price }} ₽</h2>
                     </div>
                     {% if current_user.is_authenticated %}
-                    <a href="#" class="btn btn-primary r">Добавить в корзину<img src="{{ url_for('static', filename='img/header/shopping_cart.svg') }}" alt="mdo" width="32" height="32" class="o"></a>
+                    <a href="{{ url_for('add_to_cart', id=item.id) }}" class="btn btn-primary r">Добавить в корзину<img src="{{ url_for('static', filename='img/header/shopping_cart.svg') }}" alt="mdo" width="32" height="32" class="o"></a>
                     {% else %}
-                    <a href="#" class="btn btn-primary r">Добавить в корзину<img src="{{ url_for('static', filename='img/header/shopping_cart.svg') }}" alt="mdo" width="32" height="32" class="o"></a>
+                    <a href="{{ url_for('add_to_cart', id=item.id) }}" class="btn btn-primary r">Добавить в корзину<img src="{{ url_for('static', filename='img/header/shopping_cart.svg') }}" alt="mdo" width="32" height="32" class="o"></a>
                     {% endif %}
                 </div>
             </div>

@@ -71,6 +71,21 @@ def about():
     return render_template('about.html', title='О нас')
 
 
+# Поиск по имени товара
+@app.route('/search')
+def search_item():
+    query = request.args.get('query')  # Получаем значение запроса из параметра 'query'
+    sess = db_session.create_session()
+    if query:
+        items = sess.query(Item).filter(Item.name.ilike(f'%{query}%')).all()  # Ищем товары по названию
+    else:
+        items = sess.query(Item).all()  # Ищем все товары
+    for item in items:
+        item.logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
+
+    return render_template("item.html", title='Результаты поиска', items=items, text=query)
+
+
 #              !!!!! БЛОК СВЯЗАННЫЙ С ПОЛЬЗОВАТЕЛЕМ !!!!!
 
 # Регистрация пользователя
@@ -123,7 +138,16 @@ def logout():
 def profile():
     db_sess = db_session.create_session()
     user: User = db_sess.query(User).get(current_user.id)
-    return render_template('profile.html', user=user, title='Ваш профиль')
+    items_in_cart = []
+    items = []
+    if current_user.shopping_cart:
+        items_in_cart = [int(id) for id in current_user.shopping_cart.split(',') if id]
+    if items_in_cart:
+        items = db_sess.query(Item).filter(Item.id.in_(items_in_cart)).all()
+    if items:
+        for item in items:
+            item.logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
+    return render_template('profile.html', user=user, title='Ваш профиль', items=items)
 
 
 # Обновление пароля аккаунта
@@ -296,7 +320,7 @@ def item_profile(id):
     form = CommentForm()  # Создаем экземпляр формы
     db_sess = db_session.create_session()
     item = db_sess.query(Item).filter(Item.id == id).first()
-    shop = db_sess.query(Shop).get(item.seller_id)
+    shop: Shop = db_sess.query(Shop).get(item.seller_id)
     comments = []
     if item.comments:
         comments = item.comments.split(',')
@@ -360,7 +384,7 @@ def item_change(id: int):
         categories = item.category_id.split(',')
         ctgr = []
         for category_id in categories:
-            category = db_sess.query(Category).get(int(category_id))
+            category: Category = db_sess.query(Category).get(int(category_id))
             if category:
                 ctgr.append(category)
 
@@ -404,19 +428,57 @@ def item_change(id: int):
     return render_template('item-register.html', title='Изменение данных', form=form)
 
 
-# Поиск по имени товара
-@app.route('/search')
-def search_item():
-    query = request.args.get('query')  # Получаем значение запроса из параметра 'query'
-    sess = db_session.create_session()
-    if query:
-        items = sess.query(Item).filter(Item.name.ilike(f'%{query}%')).all()  # Ищем товары по названию
-    else:
-        items = sess.query(Item).all()  # Ищем все товары
-    for item in items:
-        item.logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
+#              !!!!! БЛОК СВЯЗАННЫЙ С КОРЗИНОЙ !!!!!
 
-    return render_template("item.html", title='Результаты поиска', items=items, text=query)
+# Добавление товара в корзину
+@app.route('/add_to_cart/<int:id>')
+@login_required
+def add_to_cart(id):
+    db_sess = db_session.create_session()
+    item = db_sess.query(Item).filter(Item.id == id).first()
+    user = db_sess.query(User).filter(User.id == current_user.id).first()
+    if item and user:
+        if user.shopping_cart:
+            user.shopping_cart += f",{item.id}"
+        else:
+            user.shopping_cart = item.id
+        db_sess.commit()
+    return redirect(url_for('item_profile', id=id))
+
+
+# Отображение корзины
+@app.route('/cart')
+@login_required
+def cart():
+    db_sess = db_session.create_session()
+    items_in_cart = []
+    items = []
+    total_price = 0
+    if current_user.shopping_cart:
+        items_in_cart = [int(id) for id in current_user.shopping_cart.split(',') if id]
+    if items_in_cart:
+        items = db_sess.query(Item).filter(Item.id.in_(items_in_cart)).all()
+    if items:
+        for item in items:
+            item.logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
+            total_price += item.price
+    return render_template('cart.html', title='Корзина', items=items, total_price=total_price)
+
+
+# Удаление товара из корзины
+@app.route('/delete_from_cart/<int:id>')
+@login_required
+def delete_from_cart(id):
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).filter(User.id == current_user.id).first()
+    if user:
+        user.shopping_cart = user.shopping_cart.replace(f",{id}", '')
+        sp = user.shopping_cart.split(',')
+        if f'{id}' in sp:
+            sp.remove(f'{id}')
+            user.shopping_cart = ','.join(sp)
+        db_sess.commit()
+    return redirect(url_for('cart'))
 
 
 if __name__ == '__main__':

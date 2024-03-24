@@ -1,0 +1,61 @@
+.iiii {
+    width: calc((100% - 60px * 3) / 4);
+    height: 320px;
+    display: inline-block;
+    margin: 30px 15px;
+    position: relative;
+}
+
+.ppp {
+    overflow-wrap: break-word;
+    overflow: hidden;
+    text-align: center;
+    margin: auto;
+    height: 30px;
+    margin-top: -10px;
+}
+
+.okj {
+    margin-left: 10px;
+}
+.iiii img {
+    width: 100%;
+    height: 200px;
+}
+
+
+@media only screen and (max-width: 931px) {
+    /* Медиа-запрос для iPad'ов */
+    .v234 {
+        display: block;
+        width: 100%;
+        margin-top: 20px;
+    }
+    .ttt {
+        height: 150%;
+        margin-right: 40px;
+    }
+    .iiii {
+        width: calc((100% - 30px * 3) / 2);
+        height: 340px;
+    }
+    .iiii img {
+        height: 210px;
+    }
+}
+
+@media only screen and (max-width: 560px) {
+    /* Медиа-запрос для телефонов */
+    .v234 {
+        display: block;
+        width: 100%;
+        margin-top: 20px;
+    }
+    .iiii {
+        width: calc((100% - 12px * 3));
+        height: 320px;
+    }
+    .iiii img {
+        height: 200px;
+    }
+}

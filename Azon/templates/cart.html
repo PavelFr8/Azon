@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/item2.css') }}">
+</head>
+<div class="card" style="display: flex; width: 78%; margin: 50px auto;">
+    <div class="card-body">
+        <h2 class="card-title">Корзина <a class="btn btn-primary" style="margin-left: 20px;" href="/cart">В корзину</a></h2>
+        {% for item in items %}
+        <a href="{{ url_for('item_profile', id=item.id) }}" style="color: black; text-decoration: none;">
+            <div class="col-md-6 border rounded-3 iiii border-3">
+                <div style="margin: auto;">
+                    {% if item.logo_data %}
+                    <img src="data:image/jpeg;base64,{{ item.logo_data }}" alt="Фото товара" class="rounded-3 border border-3 border-primary" style="margin-right: 40px;">
+                    {% endif %}
+                    <div>
+                        <h2 class="okj">{{ item.price }} ₽</h2>
+                    </div>
+                    <div>
+                        <p style="max-width: 200px; text-align: center;" class="ppp">{{ item.name }}</p>
+                    </div>
+                    <div style="margin: 0 12px; display: flex;">
+                        <a href="{{ url_for('delete_from_cart', id=item.id) }}" class="btn btn-danger">Удалить</a>
+                    </div>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+<hr style="width: 90%; height: 2px; display: flex; margin: 10px auto;">
+<h1 class="all_price">Общая стоимость: {{ total_price }} ₽</h1>
+<a class="btn btn-primary">Оплатить</a>
+{% endblock %}
