@@ -1,0 +1,55 @@
+.card {
+    margin-bottom: 30px;
+}
+
+.card-img-top {
+    width: 100%;
+    height: auto;
+}
+
+.r {
+    background-color: #ff6b01;
+    border-color: #ff6b01;
+    display: block;
+    width: 85%;
+    margin: auto;
+    margin-top: 30px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.r:hover {
+    background-color: #ff7e36;
+    border-color: #ff7e36;
+}
+
+.price {
+    padding: 10px 10px;
+    color: white;
+}
+
+.price-box {
+    background: green;
+    display: inline-block;
+    border-radius: 8px;
+    width 50%;
+}
+.o {
+    filter: invert(100%);
+    margin-left: 20px;
+}
+
+@media only screen and (min-width: 750px) {
+.price {
+    font-size: 25px;
+}
+.o {
+    display: flex;
+    margin: auto;
+    width: 32px;
+    height: 32px;
+}
+.opa {
+    height: 80%;
+}
+}

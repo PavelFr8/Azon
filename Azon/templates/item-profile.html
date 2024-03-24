@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/item-prof.css') }}">
+</head>
+<div class="container mt-4">
+    <h3 class="card-title">{{ item.name }}</h3>
+    <hr style="height: 3px;">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="card">
+                <img src="data:image/jpeg;base64,{{ logo_data }}" class="card-img-top" alt="Product Image" width="500" height="500">
+            </div>
+            <div class="card opa" style="width: 100%; box-sizing: border-box; display: block;">
+            <div class="card-body">
+                {% if current_user.is_authenticated %}
+                <form action="{{ url_for('add_comment', id=item.id) }}" method="post">
+                    {{ form.csrf_token }}
+                    <div class="form-floating">
+                        {{ form.text(class="form-control", id="floatingInput", placeholder="Отзыв") }}
+                        <label for="floatingInput">Отзыв</label>
+                        <button type="submit" class="btn btn-primary w-40 py-2 fs-5 fw-bold" style="margin: 20px auto; display: flex;">Опубликовать отзыв</button>
+                        {% for error in form.text.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </form>
+                {% endif %}
+            </div>
+            <hr style="width: 100%; height: 2px;">
+            {% if comments %}
+            {% for com in comments %}
+                <div style="margin: auto;">
+                    <div>
+                        <p class="okj" style="margin-left: 20px; margin-right: 20px;">{{ com }}</p>
+                    </div>
+                </div>
+            <hr style="width: 100%; height: 2px;">
+            {% endfor %}
+            {% endif %}
+        </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Описание</h5>
+                    <p class="card-text">{{ item.about }}</p>
+                    <br>
+                    <h5>Продавец:</h5>
+                    <a href="{{ url_for('shop_profile', id=item.seller_id) }}"><img src="data:image/jpeg;base64,{{ logo_data2 }}" class="card-img-top" alt="Product Image"></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="price-box">
+                        <h2 class="card-text price">{{ item.price }} ₽</h2>
+                    </div>
+                    {% if current_user.is_authenticated %}
+                    <a href="#" class="btn btn-primary r">Добавить в корзину<img src="{{ url_for('static', filename='img/header/shopping_cart.svg') }}" alt="mdo" width="32" height="32" class="o"></a>
+                    {% else %}
+                    <a href="#" class="btn btn-primary r">Добавить в корзину<img src="{{ url_for('static', filename='img/header/shopping_cart.svg') }}" alt="mdo" width="32" height="32" class="o"></a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -12,6 +12,7 @@ class Item(SqlAlchemyBase):
     img = sa.Column(sa.LargeBinary, nullable=False)
     category_id = sa.Column(sa.Integer, sa.ForeignKey("categories.id"), nullable=False)
     seller_id = sa.Column(sa.Integer, sa.ForeignKey("shops.id"))
+    comments = sa.Column(sa.String, nullable=True)
 
     shop = orm.relationship('Shop')
     category = orm.relationship('Category', back_populates='items')

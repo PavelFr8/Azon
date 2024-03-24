@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, abort
+from flask import Flask, render_template, redirect, request, abort, url_for
 from data.allowes_file import allowed_file
 from data.category_loader import load_categories
 from data import db_session
@@ -12,6 +12,7 @@ from forms.loginform import LoginForm
 from forms.userchange import UserChangeForm
 from forms.shopchange import ShopChangeForm
 from forms.itemform import ItemForm
+from forms.commentform import CommentForm
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 import base64
 
@@ -192,10 +193,9 @@ def shop_register():
 
 # Профиль магазина
 @app.route('/shop_profile/<int:id>')
-@login_required
 def shop_profile(id):
     db_sess = db_session.create_session()
-    shop = db_sess.query(Shop).filter(Shop.id == id, Shop.owner_id == current_user.id).first()
+    shop = db_sess.query(Shop).filter(Shop.id == id).first()
     items = db_sess.query(Item).filter(Item.seller_id == id).all()
 
     # Преобразуем бинарные данные логотипа в base64
@@ -292,15 +292,42 @@ def item_register(id):
 
 # Профиль товара
 @app.route('/item_profile/<int:id>')
-@login_required
 def item_profile(id):
+    form = CommentForm()  # Создаем экземпляр формы
     db_sess = db_session.create_session()
     item = db_sess.query(Item).filter(Item.id == id).first()
+    shop = db_sess.query(Shop).get(item.seller_id)
+    comments = []
+    if item.comments:
+        comments = item.comments.split(',')
 
     # Преобразуем бинарные данные логотипа в base64
     logo_data = base64.b64encode(item.img).decode('utf-8')
+    logo_data2 = base64.b64encode(shop.img).decode('utf-8')
 
-    return render_template('item-profile.html', item=item, title=f'Товар "{item.name}"', logo_data=logo_data)
+    # Передаем объект формы в контекст шаблона
+    return render_template('item-profile.html', item=item, title=f'{item.name}', logo_data=logo_data,
+                           comments=comments, form=form, logo_data2=logo_data2)
+
+
+# Обработчик для отправки комментария
+@app.route('/add_comment/<int:id>', methods=['POST'])
+@login_required
+def add_comment(id):
+    form = CommentForm(request.form)
+    if form.validate_on_submit():
+        # Если форма валидна, добавляем комментарий к элементу
+        db_sess = db_session.create_session()
+        item = db_sess.query(Item).filter(Item.id == id).first()
+        if item:
+            # Обновляем поле комментариев у элемента, разделяя их запятыми
+            if item.comments:
+                item.comments += f",{form.text.data}"
+            else:
+                item.comments = form.text.data
+            db_sess.commit()
+        return redirect(url_for('item_profile', id=id))
+    return redirect(url_for('item_profile', id=id))
 
 
 # Удаление товара
