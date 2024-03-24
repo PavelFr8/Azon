@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/shop-prof.css') }}">
+</head>
 <main class="form-signin w-100 m-auto">
     <h1 class="h3 mb-3 font-weight-bolder fs-1" style="margin: 20px auto; text-align: center;"><img src="data:image/jpeg;base64,{{ logo_data }}" alt="Логотип магазина" width="175" height="100" class="rounded-3 border border-3 border-primary" style="margin-right: 40px;">{{ shop.name }}</h1>
     <div class="card" style="display: flex; width: 70%; margin: auto;">
@@ -12,14 +15,30 @@
             <br>
             <h2 class="card-title font-weight-bold">Контактная информация</h2>
             <p class="font-weight-normal fs-5">{{ shop.user.email }}</p>
-                        <a href="{{ url_for('shop_change', id=shop.id) }}" class="btn btn-primary" type="button">Изменить данные</a>
+            <a href="{{ url_for('shop_change', id=shop.id) }}" class="btn btn-primary" type="button">Изменить данные</a>
         </div>
     </div>
 </main>
-    <div class="card" style="display: flex; width: 78%; margin: 50px auto;">
-        <div class="card-body">
-            <h2 class="card-title">Товары <a href="{{ url_for('item_register', id=shop.id) }}" class="btn btn-primary" style="margin-left: 20px;">Добавить</a></h2>
-
+<div style="text-align: center; margin-top: 50px; margin-bottom: 50px;">
+    <h2 class="card-title">Товары <a href="{{ url_for('item_register', id=shop.id) }}" class="btn btn-primary" style="margin-left: 20px;">Добавить</a></h2>
+</div>
+{% for item in items %}
+<div class="col-md-6 border rounded-3 iiii border-3">
+    <div style="margin: auto;">
+        {% if item.logo_data %}
+            <img src="data:image/jpeg;base64,{{ item.logo_data }}" alt="Фото товара" class="rounded-3 border border-3 border-primary" style="margin-right: 40px;">
+        {% endif %}
+        <div>
+            <h2 class="okj">{{ item.price }} ₽</h2>
+        </div>
+        <div>
+            <p style="max-width: 200px; text-align: center;" class="ppp">{{ item.name }}</p>
+        </div>
+        <div style="margin: 0 12px; display: flex;">
+            <a href="{{ url_for('item_change', id=item.id) }}" class="btn btn-primary" style="margin-right: 8px;">Изменить</a>
+            <a href="{{ url_for('delete_item', id=item.id) }}" class="btn btn-danger">Удалить</a>
         </div>
     </div>
+</div>
+{% endfor %}
 {% endblock %}

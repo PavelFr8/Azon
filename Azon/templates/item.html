@@ -1,22 +1,23 @@
 {% extends "base.html" %}
-
 {% block content %}
-<h1>Записи в блоге</h1>
-{% for item in news%}
-<div class="col-md6 border rounded">
-    <h2>{{item.title}}</h2>
-    <div>
-        {{item.content}}
-    </div>
-    <div>
-        Автор - {{item.user.name}}, Дата написания - {{item.created_date}}
-    </div>
-    {% if current_user.is_authenticated and current_user == item.user %}
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/item.css') }}">
+</head>
+{% for item in items %}
+<a href="{{ url_for('item_profile', id=item.id) }}" style="color: black;">
+<div class="col-md-6 border rounded-3 iiii border-3">
+    <div style="margin: auto;">
+        {% if item.logo_data %}
+        <img src="data:image/jpeg;base64,{{ item.logo_data }}" alt="Фото товара" class="rounded-3 border border-3 border-primary" style="margin-right: 40px;">
+        {% endif %}
         <div>
-            <a href="/news/{{ item.id }}" class="btn btn-warning">Изменить</a>
-            <a href="/news_delete/{{ item.id }}" class="btn btn-danger">Удалить</a>
+            <h2 class="okj">{{ item.price }} ₽</h2>
         </div>
-    {% endif %}
+        <div>
+            <p style="max-width: 200px; text-align: center;" class="ppp">{{ item.name }}</p>
+        </div>
+    </div>
 </div>
+</a>
 {% endfor %}
 {% endblock %}
