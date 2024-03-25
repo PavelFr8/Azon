@@ -75,6 +75,16 @@ def categories():
     return render_template('category.html', title='Категории', categories=categories)
 
 
+# Страница "Продавцы"
+@app.route('/sellers')
+def shops():
+    sess = get_db_session()
+    shops = sess.query(Shop).all()
+    for shop in shops:
+        shop.logo_data = base64.b64encode(shop.img).decode('utf-8') if shop.img else None
+    return render_template('seller.html', title='Продавцы', shops=shops)
+
+
 # Отображение товаров по выбранной категории
 @app.route('/items_by_category/<int:category_id>')
 def items_by_category(category_id):

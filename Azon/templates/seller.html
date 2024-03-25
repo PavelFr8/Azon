@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container">
+    <h1 class="mt-5">Продавцы</h1>
+    <div class="row">
+      {% for shop in shops %}
+        <div class="col-md-4 mb-4">
+          <div class="card">
+            <img src="data:image/jpeg;base64,{{ shop.logo_data }}" class="card-img-top" alt="Shop Image" width="200" height="250">
+            <div class="card-body">
+              <h5 class="card-title">{{ shop.name }}</h5>
+              <p class="card-text">{{ shop.about }}</p>
+              <a href="/shop_profile/{{ shop.id }}" class="btn btn-primary">Перейти в магазин</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}
