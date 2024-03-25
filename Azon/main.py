@@ -1,6 +1,7 @@
-from flask import Flask, render_template, redirect, request, abort, url_for
+from flask import Flask, render_template, redirect, request, abort, url_for, g
 from data.allowes_file import allowed_file
 from data.category_loader import load_categories
+from data.get_db_session import get_db_session
 from data import db_session
 from data.users import User
 from data.shops import Shop
@@ -27,34 +28,29 @@ login_manager.init_app(app)
 # shops и categories теперь типо глобальная переменная для жижи
 @app.context_processor
 def inject_shops():
+    sess = get_db_session()  # Используем функцию для получения сессии
     if current_user.is_authenticated:
-        sess = db_session.create_session()
         shops = sess.query(Shop).filter(Shop.owner_id == current_user.id).all()
-    else:
-        shops = []
-    if current_user.is_authenticated:
-        sess = db_session.create_session()
         categories = sess.query(Category).all()
     else:
+        shops = []
         categories = []
     return dict(shops=shops, categories=categories)
 
 
 @login_manager.user_loader
 def load_user(user_id):
-    db_sess = db_session.create_session()
+    db_sess = get_db_session()
     return db_sess.query(User).get(user_id)
 
 
 # Главная страница
 @app.route('/')
 def index():
-    sess = db_session.create_session()
+    sess = get_db_session()  # Используем функцию для получения сессии
     items = sess.query(Item).all()
-    # Кодируем изображения в формат base64 и добавляем в список
     for item in items:
         item.logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
-
     return render_template("item.html", title='Azon', items=items)
 
 
@@ -71,11 +67,34 @@ def about():
     return render_template('about.html', title='О нас')
 
 
+# Страница "Категории"
+@app.route('/categories')
+def categories():
+    sess = get_db_session()
+    categories = sess.query(Category).all()[1:]
+    return render_template('category.html', title='Категории', categories=categories)
+
+
+# Отображение товаров по выбранной категории
+@app.route('/items_by_category/<int:category_id>')
+def items_by_category(category_id):
+    db_sess = get_db_session()
+    category = db_sess.query(Category).get(category_id)
+    if not category:
+        abort(404)
+
+    items = db_sess.query(Item).filter(Item.category_id.ilike(f'%{category_id}%')).all()
+    for item in items:
+        item.logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
+
+    return render_template('item.html', title=f'Товары в категории {category.name}', items=items)
+
+
 # Поиск по имени товара
 @app.route('/search')
 def search_item():
     query = request.args.get('query')  # Получаем значение запроса из параметра 'query'
-    sess = db_session.create_session()
+    sess = get_db_session()
     if query:
         items = sess.query(Item).filter(Item.name.ilike(f'%{query}%')).all()  # Ищем товары по названию
     else:
@@ -96,7 +115,7 @@ def register():
         if form.password.data != form.password_again.data:
             return render_template('register.html', title='Регистрация', form=form,
                                    message='Пароли не совпадают!')
-        db_sess = db_session.create_session()
+        db_sess = get_db_session()
         if db_sess.query(User).filter(User.email == form.email.data).first():
             return render_template('register.html', title='Регистрация', form=form,
                                    message='Такой пользователь уже есть')
@@ -115,7 +134,7 @@ def register():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
+        db_sess = get_db_session()
         user: User = db_sess.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
@@ -136,7 +155,7 @@ def logout():
 @app.route('/profile')
 @login_required
 def profile():
-    db_sess = db_session.create_session()
+    db_sess = get_db_session()
     user: User = db_sess.query(User).get(current_user.id)
     items_in_cart = []
     items = []
@@ -156,14 +175,14 @@ def profile():
 def user_change(id: int):
     form = UserChangeForm()
     if request.method == 'GET':
-        db_sess = db_session.create_session()
+        db_sess = get_db_session()
         user: User = db_sess.query(User).filter(User.id == id, current_user.id == id).first()
         if user:
             form.email.data = user.email
         else:
             abort(404)
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
+        db_sess = get_db_session()
         user: User = db_sess.query(User).filter(User.id == id, current_user.id == id).first()
         if user:
             if user.check_password(form.curr_password.data):
@@ -189,14 +208,14 @@ def user_change(id: int):
 def shop_register():
     form = ShopForm()
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
+        db_sess = get_db_session()
         if db_sess.query(Shop).filter(Shop.name == form.name.data).first():
             return render_template('shop-register.html', title='Регистрация', form=form,
                                    message='Магазин с таким названием уже существует')
         img_file = request.files['img']
         if img_file and allowed_file(img_file.filename):  # проверка, что файл является фото
             img_binary = img_file.read()
-            db_sess = db_session.create_session()
+            db_sess = get_db_session()
             shop = Shop(
                 name=form.name.data,
                 about=form.about.data,
@@ -218,7 +237,7 @@ def shop_register():
 # Профиль магазина
 @app.route('/shop_profile/<int:id>')
 def shop_profile(id):
-    db_sess = db_session.create_session()
+    db_sess = get_db_session()
     shop = db_sess.query(Shop).filter(Shop.id == id).first()
     items = db_sess.query(Item).filter(Item.seller_id == id).all()
 
@@ -237,7 +256,7 @@ def shop_profile(id):
 def shop_change(id: int):
     form = ShopChangeForm()
     if request.method == 'GET':
-        db_sess = db_session.create_session()
+        db_sess = get_db_session()
         shop = db_sess.query(Shop).filter(Shop.id == id, Shop.owner_id == current_user.id).first()
 
         # Преобразуем бинарные данные логотипа в base64
@@ -250,7 +269,7 @@ def shop_change(id: int):
         else:
             abort(404)
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
+        db_sess = get_db_session()
         shop = db_sess.query(Shop).filter(Shop.id == id, Shop.owner_id == current_user.id).first()
         img_file = request.files['img']
         if shop:
@@ -286,7 +305,7 @@ def item_register(id):
     if form.validate_on_submit():
         img_file = request.files['img']
         if img_file and allowed_file(img_file.filename):
-            db_sess = db_session.create_session()
+            db_sess = get_db_session()
             img_binary = img_file.read()
             categories = [form.category1.data, form.category2.data, form.category3.data]
             category_ids = []
@@ -318,12 +337,12 @@ def item_register(id):
 @app.route('/item_profile/<int:id>')
 def item_profile(id):
     form = CommentForm()  # Создаем экземпляр формы
-    db_sess = db_session.create_session()
+    db_sess = get_db_session()
     item = db_sess.query(Item).filter(Item.id == id).first()
     shop: Shop = db_sess.query(Shop).get(item.seller_id)
     comments = []
     if item.comments:
-        comments = item.comments.split(',')
+        comments = item.comments.split(';')
 
     # Преобразуем бинарные данные логотипа в base64
     logo_data = base64.b64encode(item.img).decode('utf-8')
@@ -341,12 +360,12 @@ def add_comment(id):
     form = CommentForm(request.form)
     if form.validate_on_submit():
         # Если форма валидна, добавляем комментарий к элементу
-        db_sess = db_session.create_session()
-        item = db_sess.query(Item).filter(Item.id == id).first()
+        db_sess = get_db_session()
+        item: Item = db_sess.query(Item).get(id)
         if item:
-            # Обновляем поле комментариев у элемента, разделяя их запятыми
+            # Обновляем поле комментариев у элемента, разделяя их точкой-запятой
             if item.comments:
-                item.comments += f",{form.text.data}"
+                item.comments += f";{form.text.data}"
             else:
                 item.comments = form.text.data
             db_sess.commit()
@@ -358,8 +377,8 @@ def add_comment(id):
 @app.route('/delete_item/<int:id>', methods=['GET', 'POST'])
 @login_required
 def delete_item(id):
-    db_sess = db_session.create_session()
-    item: Item = db_sess.query(Item).filter(Item.id == id).first()
+    db_sess = get_db_session()
+    item: Item = db_sess.query(Item).get(id)
     if item:
         db_sess.delete(item)
         db_sess.commit()
@@ -373,7 +392,7 @@ def delete_item(id):
 @login_required
 def item_change(id: int):
     form = ItemForm()
-    db_sess = db_session.create_session()
+    db_sess = get_db_session()
     item = db_sess.query(Item).filter(Item.id == id).first()
 
     if not item:
@@ -434,12 +453,14 @@ def item_change(id: int):
 @app.route('/add_to_cart/<int:id>')
 @login_required
 def add_to_cart(id):
-    db_sess = db_session.create_session()
-    item = db_sess.query(Item).filter(Item.id == id).first()
-    user = db_sess.query(User).filter(User.id == current_user.id).first()
+    db_sess = get_db_session()
+    item: Item = db_sess.query(Item).get(id)
+    user: User = db_sess.query(User).get(current_user.id)
     if item and user:
         if user.shopping_cart:
-            user.shopping_cart += f",{item.id}"
+            cart = user.shopping_cart.split(',')
+            if f'{item.id}' not in cart:
+                user.shopping_cart += f',{item.id}'
         else:
             user.shopping_cart = item.id
         db_sess.commit()
@@ -450,7 +471,7 @@ def add_to_cart(id):
 @app.route('/cart')
 @login_required
 def cart():
-    db_sess = db_session.create_session()
+    db_sess = get_db_session()
     items_in_cart = []
     items = []
     total_price = 0
@@ -469,8 +490,8 @@ def cart():
 @app.route('/delete_from_cart/<int:id>')
 @login_required
 def delete_from_cart(id):
-    db_sess = db_session.create_session()
-    user = db_sess.query(User).filter(User.id == current_user.id).first()
+    db_sess = get_db_session()
+    user: User = db_sess.query(User).get(current_user.id)
     if user:
         user.shopping_cart = user.shopping_cart.replace(f",{id}", '')
         sp = user.shopping_cart.split(',')
