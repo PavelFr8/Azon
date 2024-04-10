@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, request, abort, url_for, g
-from data.allowes_file import allowed_file
+from func.allowes_file import allowed_file
 from data.category_loader import load_categories
 from data.get_db_session import get_db_session
 from data import db_session
@@ -14,6 +14,7 @@ from forms.userchange import UserChangeForm
 from forms.shopchange import ShopChangeForm
 from forms.itemform import ItemForm
 from forms.commentform import CommentForm
+from forms.buyform import BuyForm
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 import base64
 
@@ -510,6 +511,36 @@ def delete_from_cart(id):
             user.shopping_cart = ','.join(sp)
         db_sess.commit()
     return redirect(url_for('cart'))
+
+
+#              !!!!! БЛОК СВЯЗАННЫЙ С ОПЛАТОЙ !!!!!
+
+
+# Оплата товара
+@app.route('/buy', methods=['GET', 'POST'])
+@login_required
+def buy():
+    form = BuyForm()
+    db_sess = get_db_session()
+    total_price = 0
+    user: User = db_sess.query(User).get(current_user.id)
+    total_price = [total_price + item.price for item in db_sess.query(Item).filter(Item.id.in_(
+        [int(id) for id in current_user.shopping_cart.split(',') if id])).all()]
+    if request.method == 'POST':
+        if user.address != 'Не выбран':
+            user.shopping_cart = ''
+            db_sess.commit()
+            return redirect('/')
+        return render_template('buy.html', title='Оплата', total_price=total_price[0], form=form,
+                               message='Адрес не указан')
+
+    return render_template('buy.html', title='Оплата', total_price=total_price[0], form=form)
+
+
+@app.route('/address', methods=['GET', 'POST'])
+@login_required
+def address():
+    pass
 
 
 if __name__ == '__main__':

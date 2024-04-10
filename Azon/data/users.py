@@ -14,6 +14,7 @@ class User(SqlAlchemyBase, UserMixin):
     shopping_cart = sa.Column(sa.String, nullable=True)
     delivery_address = sa.Column(sa.String, nullable=True)  # тут пустота true но надо будеть сделать false
     created_date = sa.Column(sa.DateTime, default=datetime.datetime.now)
+    address = sa.Column(sa.String, nullable=True, default='Не выбран')
 
     shop = orm.relationship('Shop', back_populates='user')
 

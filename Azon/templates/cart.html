@@ -31,5 +31,9 @@
 </div>
 <hr style="width: 90%; height: 2px; display: flex; margin: 10px auto;">
 <h1 class="all_price">Общая стоимость: {{ total_price }} ₽</h1>
+{% if current_user.shopping_cart %}
+<a class="btn btn-primary" href="{{ url_for('buy') }}">Оплатить</a>
+{% else %}
 <a class="btn btn-primary">Оплатить</a>
+{% endif %}
 {% endblock %}
