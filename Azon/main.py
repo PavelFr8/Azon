@@ -364,15 +364,26 @@ def item_profile(id):
                            comments=comments, form=form, logo_data2=logo_data2)
 
 
-# Обработчик для отправки комментария
+# Обработчик для отправки отзывы
 @app.route('/add_comment/<int:id>', methods=['POST'])
 @login_required
 def add_comment(id):
     form = CommentForm(request.form)
-    if form.validate_on_submit():
-        # Если форма валидна, добавляем комментарий к элементу
+    if form.validate_on_submit() and 'rate' in request.form:
+        # Если форма валидна, добавляем комментарий и оценку к элементу
         db_sess = get_db_session()
-        item: Item = db_sess.query(Item).get(id)
+        item: Item = db_sess.get(Item, id)
+        current_rating = item.rating
+        if current_rating:
+            sum_rating = int(current_rating.split(';')[0])
+            num_rating = int(current_rating.split(';')[1])
+        else:
+            sum_rating, num_rating, average_rating = 0, 0, 0
+        sum_rating += int(request.form['rate'])
+        num_rating += 1
+        average_rating = round(int(sum_rating) / int(num_rating), 1)
+        # В рейтинг добавляем общую сумму рейтинга, количество оценок и среднюю оценку для изменения средней величины
+        item.rating = f"{sum_rating};{num_rating};{average_rating}"
         if item:
             # Обновляем поле комментариев у элемента, разделяя их точкой-запятой
             if item.comments:

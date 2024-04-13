@@ -2,6 +2,7 @@
 {% block content %}
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/item-prof.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <div class="container mt-4">
     <h3 class="card-title">{{ item.name }}</h3>
@@ -17,6 +18,21 @@
                 {% if current_user.is_authenticated %}
                 <form action="{{ url_for('add_comment', id=item.id) }}" method="post">
                     {{ form.csrf_token }}
+                    <div class="container">
+                        <div class="star-widget">
+                            <input type="radio" name="rate" id="rate-5" value="5">
+                            <label for="rate-5" class="fas fa-star"></label>
+                            <input type="radio" name="rate" id="rate-4" value="4">
+                            <label for="rate-4" class="fas fa-star"></label>
+                            <input type="radio" name="rate" id="rate-3" value="3">
+                            <label for="rate-3" class="fas fa-star"></label>
+                            <input type="radio" name="rate" id="rate-2" value="2">
+                            <label for="rate-2" class="fas fa-star"></label>
+                            <input type="radio" name="rate" id="rate-1" value="1">
+                            <label for="rate-1" class="fas fa-star"></label>
+                        </div>
+                    </div>
+
                     <div class="form-floating">
                         {{ form.text(class="form-control", id="floatingInput", placeholder="Отзыв") }}
                         <label for="floatingInput">Отзыв</label>
@@ -60,10 +76,13 @@
                     <div class="price-box">
                         <h2 class="card-text price">{{ item.price }} ₽</h2>
                     </div>
+                    <div class="rating" data-value="{{ item.rating.split(';')[2] }}">
+                        <h2 class="rating-value">Рейтинг: {{ item.rating.split(';')[2] }}</h2>
+                    </div>
                     {% if current_user.is_authenticated %}
                     <a href="{{ url_for('add_to_cart', id=item.id) }}" class="btn btn-primary r">Добавить в корзину<img src="{{ url_for('static', filename='img/header/shopping_cart.svg') }}" alt="mdo" width="32" height="32" class="o"></a>
                     {% else %}
-                    <a href="#" class="btn btn-primary r">Добавить в корзину<img src="{{ url_for('static', filename='img/header/shopping_cart.svg') }}" alt="mdo" width="32" height="32" class="o"></a>
+                    <a href="{{ url_for('login') }}" class="btn btn-primary r">Добавить в корзину<img src="{{ url_for('static', filename='img/header/shopping_cart.svg') }}" alt="mdo" width="32" height="32" class="o"></a>
                     {% endif %}
                 </div>
             </div>
