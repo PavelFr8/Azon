@@ -11,6 +11,7 @@
 }
 body {
     height: 100vh;
+    background: linear-gradient(0deg, rgba(91,84,239,1) 1%, rgba(84,139,239,1) 3%, rgba(255,255,255,1) 9%);
 }
 
 

@@ -1,5 +1,6 @@
 from flask import Flask, render_template, redirect, request, abort, url_for, g
 from func.allowes_file import allowed_file
+from func.yandex_map_api.get_shops import find_shops
 from data.category_loader import load_categories
 from data.get_db_session import get_db_session
 from data import db_session
@@ -29,10 +30,10 @@ login_manager.init_app(app)
 # shops и categories теперь типо глобальная переменная для жижи
 @app.context_processor
 def inject_shops():
-    sess = get_db_session()  # Используем функцию для получения сессии
+    db_sess = get_db_session()  # Используем функцию для получения сессии
     if current_user.is_authenticated:
-        shops = sess.query(Shop).filter(Shop.owner_id == current_user.id).all()
-        categories = sess.query(Category).all()
+        shops = db_sess.query(Shop).filter(Shop.owner_id == current_user.id).all()
+        categories = db_sess.query(Category).all()
     else:
         shops = []
         categories = []
@@ -540,7 +541,23 @@ def buy():
 @app.route('/address', methods=['GET', 'POST'])
 @login_required
 def address():
-    pass
+    query = request.args.get('query')
+    closest_shops = find_shops(query)
+    if closest_shops == 'Некорректные введённые данные':
+        return render_template('address.html', title='Выбор адреса', text=query, closest_shops=closest_shops,
+                               message='Некорректные введённые данные')
+    return render_template('address.html', title='Выбор адреса', text=query, closest_shops=closest_shops)
+
+
+@app.route('/choose_address/<address>')
+@login_required
+def choose_address(address):
+    db_sess = get_db_session()
+    user: User = db_sess.query(User).get(current_user.id)
+    if user:
+        user.address = address
+        db_sess.commit()
+    return redirect('/buy')
 
 
 if __name__ == '__main__':

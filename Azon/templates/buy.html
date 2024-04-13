@@ -16,9 +16,9 @@
         <h2 class="card-title">К оплате: {{ total_price }} ₽</h2>
             <br>
         {% if current_user.address == 'Не выбран' %}
-        <h3 class="btn btn-danger fw-bold text-light">Адрес пункта выдачи: {{ current_user.address}}</h3>
+        <a class="btn btn-danger fw-bold text-light" href="{{ url_for('address') }}">Адрес пункта выдачи: {{ current_user.address}}</a>
         {% else %}
-        <h3 class="btn btn-success fw-bold text-light">Адрес пункта выдачи: {{ current_user.address}}</h3>
+        <a class="btn btn-success fw-bold text-light" href="{{ url_for('address') }}">Адрес пункта выдачи: {{ current_user.address}}</a>
         {% endif %}
         <br>
         <br>
