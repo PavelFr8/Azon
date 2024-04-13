@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 
 
 def get_api_keys():
-    path = os.path.join(os.path.dirname('Azon'), '../../.env')
+    path = os.path.join(os.path.dirname('Azon'), '.env')
     if os.path.exists(path):
         load_dotenv(path)
 

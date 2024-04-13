@@ -20,4 +20,3 @@ def get_coords(address, key):
         return None, None
     coords = toponym['Point']['pos'].split()
     return coords[0], coords[1]
-
