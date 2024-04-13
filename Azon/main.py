@@ -402,11 +402,18 @@ def add_comment(id):
 def delete_item(id):
     db_sess = get_db_session()
     item: Item = db_sess.query(Item).get(id)
+
     if item:
+        # Удаляем товар из корзины каждого пользователя, у которого он есть
+        users_with_item = db_sess.query(User).filter(User.shopping_cart.like(f"%{item.id}%"))
+        for user in users_with_item:
+            user.shopping_cart = ','.join(filter(lambda x: x != str(item.id), user.shopping_cart.split(',')))
+
         db_sess.delete(item)
         db_sess.commit()
     else:
         abort(404)
+
     return redirect(f'/shop_profile/{item.seller_id}')
 
 

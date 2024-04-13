@@ -39,7 +39,7 @@
     margin-left: 20px;
 }
 
-@media only screen and (min-width: 750px) {
+@media only screen and (min-width: 950px) {
 .price {
     font-size: 25px;
 }
@@ -52,7 +52,7 @@
 }
 
 .container {
-    padding: 20px 30px;
+    padding: 10px 15px;
     border: 1px solid #444;
     border-radius: 5px;
     display: flex;
@@ -66,7 +66,7 @@
 }
 
 .star-widget label {
-    font-size: 40px;
+    font-size: 25px;
     color: #444;
     padding: 5px;
     float: right;
@@ -75,7 +75,7 @@
 
 @media screen and (max-width: 768px) {
     .star-widget label {
-        font-size: 30px;
+        font-size: 25px;
     }
 }
 

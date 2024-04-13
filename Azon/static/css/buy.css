@@ -27,8 +27,8 @@ body {
 @media only screen and (max-width: 560px) {
     /* Медиа-запрос для телефонов */
     .kartochka {
-        width: 37vh;
-        height: 23vh;
+        width: 38vh;
+        height: 30vh;
     }
     .shirina {
         width: 90%;
