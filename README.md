@@ -13,6 +13,8 @@
 
 pip install -r requirements.txt
 
+Вставьте ключи от API Yandex Maps в файл **.env**
+
 
 ## Структура проекта
 
