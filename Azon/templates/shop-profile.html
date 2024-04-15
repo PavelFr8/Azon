@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/shop-prof.css') }}">
 </head>
 <main class="form-signin w-100 m-auto">
-    <h1 class="h3 mb-3 font-weight-bolder fs-1" style="margin: 20px auto; text-align: center;"><img src="data:image/jpeg;base64,{{ logo_data }}" alt="Логотип магазина" width="175" height="135" class="rounded-3 border border-3 border-primary" style="margin-right: 40px;">{{ shop.name }}</h1>
+    <h1 class="h3 mb-3 font-weight-bolder fs-1" style="margin: 20px auto; text-align: center;"><img src="data:image/jpeg;base64,{{ logo_data }}" alt="Логотип магазина" width="135" height="135" class="rounded-3 border border-3 border-primary" style="margin-right: 40px;">{{ shop.name }}</h1>
     <div class="card" style="display: flex; width: 70%; margin: auto;">
         <div class="card-body">
             <h1>Информация</h1>
@@ -14,7 +14,7 @@
             <p class="font-weight-normal fs-5">{{ shop.about }}</p>
             <br>
             <h2 class="card-title font-weight-bold">Контактная информация</h2>
-            <p class="font-weight-normal fs-5">{{ shop.user.email }}</p>
+            <p class="font-weight-normal fs-5">{{ shop.contact }}</p>
             {% if shop.owner_id == current_user.id %}
             <a href="{{ url_for('shop_change', id=shop.id) }}" class="btn btn-primary" type="button">Изменить данные</a>
             {% endif %}
