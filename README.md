@@ -5,6 +5,14 @@
 опыт онлайн-шопинга, предоставив возможность как покупать 
 товары, так и продавать их.
 
+## Использованные технологии
+* Python 3.9;
+* HTML, CSS;
+* Flask (Telegram Bot framework);
+* SQLite (database);
+* SQLAlchemy (working with database from Python);
+* [Yandex Maps API](https://yandex.ru/maps-api/) (finding places) 
+
 ## Требования
 
 Для запуска проекта вам понадобится Python версии 3.9+ 
@@ -19,6 +27,7 @@ pip install -r requirements.txt
 ## Структура проекта
 
 - **app.py**: Главный файл приложения, содержащий основной код Flask.
+- **.env**: Хранилище переменных виртуального окружения.
 - **templates**: Шаблоны HTML-страниц.
 - **static/**: Статические файлы, такие как CSS, изображения и т.д.
 - **requirements.txt**: Список зависимостей проекта.

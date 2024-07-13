@@ -1,6 +1,9 @@
-from flask import Flask, render_template, redirect, request, abort, url_for, g
+from flask import Flask, render_template, redirect, request, abort, url_for, g, make_response
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+
 from func.allowes_file import allowed_file
 from func.yandex_map_api.get_shops import find_shops
+
 from data.category_loader import load_categories
 from data.get_db_session import get_db_session
 from data import db_session
@@ -8,6 +11,7 @@ from data.users import User
 from data.shops import Shop
 from data.items import Item
 from data.categories import Category
+
 from forms.registerform import RegisterForm
 from forms.shopform import ShopForm
 from forms.loginform import LoginForm
@@ -16,11 +20,14 @@ from forms.shopchange import ShopChangeForm
 from forms.itemform import ItemForm
 from forms.commentform import CommentForm
 from forms.buyform import BuyForm
-from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+
 import base64
+from datetime import timedelta
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'q2345rtghji98765e'
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=365)
 # app.config['DEBUG'] = True
 
 login_manager = LoginManager()
@@ -40,16 +47,32 @@ def inject_shops():
     return dict(shops=shops, categories=categories)
 
 
+# настройка передачи залогиненных пользователей
 @login_manager.user_loader
 def load_user(user_id):
     db_sess = get_db_session()
-    return db_sess.query(User).get(user_id)
+    user = db_sess.query(User).get(user_id)
+    if user:
+        return user
+    # Проверяем куки
+    username = request.cookies.get('username')
+    if username:
+        user = db_sess.query(User).filter(User.email == username).first()
+        if user:
+            login_user(user)
+            return user
 
 
 # Главная страница
 @app.route('/')
 def index():
     sess = get_db_session()  # Используем функцию для получения сессии
+    # Проверяем куки
+    username = request.cookies.get('username')
+    if username and not current_user.is_authenticated:
+        user = sess.query(User).filter(User.email == username).first()
+        if user:
+            login_user(user)
     items = sess.query(Item).all()
     for item in items:
         item.logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
@@ -137,7 +160,9 @@ def register():
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
+
         return redirect('/login')
+
     return render_template('register.html', title='Регистрация', form=form)
 
 
@@ -150,7 +175,15 @@ def login():
         user: User = db_sess.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
-            return redirect('/')
+
+            # Сохраняем куки
+            if form.remember_me.data:
+                response = make_response(redirect('/'))
+                response.set_cookie('username', user.email, max_age=60*60*24*365, httponly=True, secure=True)
+                return response
+            else:
+                return redirect('/')
+
         return render_template('login.html', title='Авторизация', message='Неверный логин или пароль', form=form)
     return render_template('login.html', title='Авторизация', form=form)
 
@@ -160,7 +193,11 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return redirect('/')
+
+    # Удаляем куки
+    response = make_response(redirect('/'))
+    response.set_cookie('username', '', expires=0)
+    return response
 
 
 # Личный профиль пользователя
