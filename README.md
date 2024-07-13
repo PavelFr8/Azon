@@ -11,7 +11,7 @@
 * Flask (Telegram Bot framework);
 * SQLite (database);
 * SQLAlchemy (working with database from Python);
-* [Yandex Maps API] (finding places) 
+* [Yandex Maps API](https://yandex.ru/maps-api/) (finding places) 
 
 ## Требования
 
@@ -27,7 +27,7 @@ pip install -r requirements.txt
 ## Структура проекта
 
 - **app.py**: Главный файл приложения, содержащий основной код Flask.
-- - **.env**: Хранилище .
+- **.env**: Хранилище переменных виртуального окружения.
 - **templates**: Шаблоны HTML-страниц.
 - **static/**: Статические файлы, такие как CSS, изображения и т.д.
 - **requirements.txt**: Список зависимостей проекта.
