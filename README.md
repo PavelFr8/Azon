@@ -11,7 +11,7 @@
 * Flask (Telegram Bot framework);
 * SQLite (database);
 * SQLAlchemy (working with database from Python);
-* [Yandex Maps API] (finding places) 
+* [Yandex Maps API](https://yandex.ru/maps-api/) (finding places) 
 
 ## Требования
 
