@@ -161,11 +161,7 @@ def register():
         db_sess.add(user)
         db_sess.commit()
 
-        # Сохраняем куки
-        response = make_response(redirect('/'))
-        response.set_cookie('username', user.email, max_age=60*60*24*365)
-        login_user(user)
-        return response
+        return redirect('/login')
 
     return render_template('register.html', title='Регистрация', form=form)
 
@@ -181,9 +177,12 @@ def login():
             login_user(user, remember=form.remember_me.data)
 
             # Сохраняем куки
-            response = make_response(redirect('/'))
-            response.set_cookie('username', user.email, max_age=60*60*24*365)
-            return response
+            if form.remember_me.data:
+                response = make_response(redirect('/'))
+                response.set_cookie('username', user.email, max_age=60*60*24*365, httponly=True, secure=True)
+                return response
+            else:
+                return redirect('/')
 
         return render_template('login.html', title='Авторизация', message='Неверный логин или пароль', form=form)
     return render_template('login.html', title='Авторизация', form=form)
