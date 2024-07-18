@@ -3,9 +3,9 @@ from flask_login import current_user, login_user, login_required
 
 import base64
 
-from . import module
 from app.models import User, Item, Shop, Category
 from app import login_manager
+from . import module
 
 
 # настройка передачи залогиненных пользователей
@@ -21,6 +21,7 @@ def load_user(user_id):
         if user:
             login_user(user)
             return user
+
 
 # Главная страница
 @module.route('/')
@@ -41,7 +42,7 @@ def index():
 # Страница "Стать продавцом"
 @module.route('/info')
 @login_required
-def shop_about():
+def info():
     return render_template('menu/info.html', title='Программа продавцов')
 
 

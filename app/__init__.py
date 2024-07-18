@@ -20,9 +20,12 @@ def create_app():
         except Exception as e:
             app.logger.error(f"Failed to initialize DebugToolbarExtension: {e}")
 
-    import app.firstmodule.controllers as firstmodule
-    app.register_blueprint(firstmodule.module)
-
     import app.menu as menu
     app.register_blueprint(menu.module)
+
+    import app.registration as registration
+    app.register_blueprint(registration.module)
+
     return app
+
+from . import models
