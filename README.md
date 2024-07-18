@@ -8,10 +8,11 @@
 ## Использованные технологии
 * Python 3.9;
 * HTML, CSS;
-* Flask (Telegram Bot framework);
-* SQLite (database);
+* Flask (Web application framework);
+* PostgreSQL (database);
 * SQLAlchemy (working with database from Python);
-* [Yandex Maps API](https://yandex.ru/maps-api/) (finding places) 
+* Jinja2 (Templating engine);
+* [Yandex Maps API](https://yandex.ru/maps-api/) (finding places);
 
 ## Требования
 
@@ -34,9 +35,16 @@ pip install -r requirements.txt
 - **data**: Функции для работы с базой данных.
 - **func**: Вспомогательные функции.
 
+
+## Запуск
 source venv/bin/activate
+
 export FLASK_APP=app
+
 flask db init
+
 flask db migrate -m "Initial migration."
+
 flask db upgrade
+
 flask run
