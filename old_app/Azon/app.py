@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, abort, url_for, g, make_response
+from flask import Flask, render_template, redirect, request, abort, url_for, make_response
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 
 from func.allowes_file import allowed_file
