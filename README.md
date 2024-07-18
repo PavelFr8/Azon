@@ -33,3 +33,10 @@ pip install -r requirements.txt
 - **requirements.txt**: Список зависимостей проекта.
 - **data**: Функции для работы с базой данных.
 - **func**: Вспомогательные функции.
+
+source venv/bin/activate
+export FLASK_APP=app
+flask db init
+flask db migrate -m "Initial migration."
+flask db upgrade
+flask run

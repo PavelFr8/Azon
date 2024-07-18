@@ -1,0 +1,127 @@
+.card {
+    margin-bottom: 30px;
+}
+
+.card-img-top {
+    width: 100%;
+    height: auto;
+}
+
+.r {
+    background-color: #ff6b01;
+    border-color: #ff6b01;
+    display: block;
+    width: 85%;
+    margin: auto;
+    margin-top: 30px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.r:hover {
+    background-color: #ff7e36;
+    border-color: #ff7e36;
+}
+
+.price {
+    padding: 10px 10px;
+    color: white;
+}
+
+.price-box {
+    background: green;
+    display: inline-block;
+    border-radius: 8px;
+    width 50%;
+}
+.o {
+    filter: invert(100%);
+    margin-left: 20px;
+}
+
+@media only screen and (min-width: 950px) {
+.price {
+    font-size: 25px;
+}
+.o {
+    display: flex;
+    margin: auto;
+    width: 32px;
+    height: 32px;
+}
+}
+
+.container {
+    padding: 10px 15px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.container .star-widget input{
+    display: none;
+}
+
+.star-widget {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.star-widget label {
+    font-size: 25px;
+    color: #444;
+    padding: 5px;
+    float: right;
+    transition: all 0.2s ease;
+}
+
+@media screen and (max-width: 768px) {
+    .star-widget label {
+        font-size: 25px;
+    }
+}
+
+input:not(:checked) ~ label:hover,
+input:not(:checked) ~ label:hover ~ label {
+    color: #fd4;
+}
+
+input:checked ~ label{
+    color: #fd4;
+}
+
+.rating-value {
+    display: block;
+    border-radius: 8px;
+    width 50%;
+    place-items: center;
+    text-align: center;
+    margin-top: 5px;
+    color: white;
+}
+
+.rating {
+    border-radius: 8px;
+}
+
+.rating[data-value^="1"] {
+    background-color: red;
+}
+
+.rating[data-value^="2"] {
+    background-color: orange;
+}
+
+.rating[data-value^="3"] {
+    background-color: #FFD700;
+}
+
+.rating[data-value^="4"] {
+    background-color: lightgreen;
+}
+
+.rating[data-value^="5"] {
+    background-color: green;
+}
