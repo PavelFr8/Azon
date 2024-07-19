@@ -5,6 +5,8 @@ from flask_debugtoolbar import DebugToolbarExtension
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 
+from dotenv import load_dotenv
+
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -12,7 +14,10 @@ login_manager = LoginManager()
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object(os.environ['APP_SETTINGS'])
+
+    load_dotenv()
+    settings = os.environ.get('APP_SETTINGS')
+    app.config.from_object(settings)
 
     if app.debug == True:
         try:

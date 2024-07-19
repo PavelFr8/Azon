@@ -12,7 +12,6 @@ db.init_app(app)
 with app.test_request_context():
     db.create_all()
 
-app.config.from_object(os.environ['APP_SETTINGS'])
 
 manager = Manager(app)
 migrate = Migrate(app, db)
