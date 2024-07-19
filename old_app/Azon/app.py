@@ -1,5 +1,5 @@
-from flask import Flask, render_template, redirect, request, abort, url_for, make_response
-from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from flask import Flask, render_template, redirect, request, abort, url_for
+from flask_login import LoginManager, login_required, current_user
 
 from func.allowes_file import allowed_file
 from func.yandex_map_api.get_shops import find_shops
@@ -12,10 +12,7 @@ from data.shops import Shop
 from data.items import Item
 from data.categories import Category
 
-from forms.registerform import RegisterForm
 from forms.shopform import ShopForm
-from forms.loginform import LoginForm
-from forms.userchange import UserChangeForm
 from forms.shopchange import ShopChangeForm
 from forms.itemform import ItemForm
 from forms.commentform import CommentForm
@@ -47,68 +44,6 @@ def inject_shops():
     return dict(shops=shops, categories=categories)
 
 
-# настройка передачи залогиненных пользователей
-@login_manager.user_loader
-def load_user(user_id):
-    db_sess = get_db_session()
-    user = db_sess.query(User).get(user_id)
-    if user:
-        return user
-    # Проверяем куки
-    username = request.cookies.get('username')
-    if username:
-        user = db_sess.query(User).filter(User.email == username).first()
-        if user:
-            login_user(user)
-            return user
-
-
-# Главная страница
-@app.route('/')
-def index():
-    sess = get_db_session()  # Используем функцию для получения сессии
-    # Проверяем куки
-    username = request.cookies.get('username')
-    if username and not current_user.is_authenticated:
-        user = sess.query(User).filter(User.email == username).first()
-        if user:
-            login_user(user)
-    items = sess.query(Item).all()
-    for item in items:
-        item.logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
-    return render_template("item.html", title='Azon', items=items)
-
-
-# Страница "Стать продавцом"
-@app.route('/shop/about')
-@login_required
-def shop_about():
-    return render_template('shop-about.html', title='Программа продавцов')
-
-
-# Страница "О нас"
-@app.route('/about')
-def about():
-    return render_template('about.html', title='О нас')
-
-
-# Страница "Категории"
-@app.route('/categories')
-def categories():
-    sess = get_db_session()
-    categories = sess.query(Category).all()[1:]
-    return render_template('category.html', title='Категории', categories=categories)
-
-
-# Страница "Продавцы"
-@app.route('/sellers')
-def shops():
-    sess = get_db_session()
-    shops = sess.query(Shop).all()
-    for shop in shops:
-        shop.logo_data = base64.b64encode(shop.img).decode('utf-8') if shop.img else None
-    return render_template('seller.html', title='Продавцы', shops=shops)
-
 
 # Отображение товаров по выбранной категории
 @app.route('/items_by_category/<int:category_id>')
@@ -125,127 +60,7 @@ def items_by_category(category_id):
     return render_template('item.html', title=f'Товары в категории {category.name}', items=items)
 
 
-# Поиск по имени товара
-@app.route('/search')
-def search_item():
-    query = request.args.get('query')  # Получаем значение запроса из параметра 'query'
-    sess = get_db_session()
-    if query:
-        items = sess.query(Item).filter(Item.name.ilike(f'%{query}%')).all()  # Ищем товары по названию
-    else:
-        items = sess.query(Item).all()  # Ищем все товары
-    for item in items:
-        item.logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
-
-    return render_template("item.html", title='Результаты поиска', items=items, text=query)
-
-
 #              !!!!! БЛОК СВЯЗАННЫЙ С ПОЛЬЗОВАТЕЛЕМ !!!!!
-
-# Регистрация пользователя
-@app.route('/register', methods=['POST', 'GET'])
-def register():
-    form = RegisterForm()
-    if form.validate_on_submit():
-        if form.password.data != form.password_again.data:
-            return render_template('register.html', title='Регистрация', form=form,
-                                   message='Пароли не совпадают!')
-        db_sess = get_db_session()
-        if db_sess.query(User).filter(User.email == form.email.data).first():
-            return render_template('register.html', title='Регистрация', form=form,
-                                   message='Такой пользователь уже есть')
-        user = User(
-            email=form.email.data
-        )
-        user.set_password(form.password.data)
-        db_sess.add(user)
-        db_sess.commit()
-
-        return redirect('/login')
-
-    return render_template('register.html', title='Регистрация', form=form)
-
-
-# Логин
-@app.route('/login', methods=['POST', 'GET'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        db_sess = get_db_session()
-        user: User = db_sess.query(User).filter(User.email == form.email.data).first()
-        if user and user.check_password(form.password.data):
-            login_user(user, remember=form.remember_me.data)
-
-            # Сохраняем куки
-            if form.remember_me.data:
-                response = make_response(redirect('/'))
-                response.set_cookie('username', user.email, max_age=60*60*24*365, httponly=True, secure=True)
-                return response
-            else:
-                return redirect('/')
-
-        return render_template('login.html', title='Авторизация', message='Неверный логин или пароль', form=form)
-    return render_template('login.html', title='Авторизация', form=form)
-
-
-# Выход из аккаунта
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-
-    # Удаляем куки
-    response = make_response(redirect('/'))
-    response.set_cookie('username', '', expires=0)
-    return response
-
-
-# Личный профиль пользователя
-@app.route('/profile')
-@login_required
-def profile():
-    db_sess = get_db_session()
-    user: User = db_sess.query(User).get(current_user.id)
-    items_in_cart = []
-    items = []
-    if current_user.shopping_cart:
-        items_in_cart = [int(id) for id in current_user.shopping_cart.split(',') if id]
-    if items_in_cart:
-        items = db_sess.query(Item).filter(Item.id.in_(items_in_cart)).all()
-    if items:
-        for item in items:
-            item.logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
-    return render_template('profile.html', user=user, title='Ваш профиль', items=items)
-
-
-# Обновление пароля аккаунта
-@app.route('/user/<int:id>', methods=['GET', 'POST'])
-@login_required
-def user_change(id: int):
-    form = UserChangeForm()
-    if request.method == 'GET':
-        db_sess = get_db_session()
-        user: User = db_sess.query(User).filter(User.id == id, current_user.id == id).first()
-        if user:
-            form.email.data = user.email
-        else:
-            abort(404)
-    if form.validate_on_submit():
-        db_sess = get_db_session()
-        user: User = db_sess.query(User).filter(User.id == id, current_user.id == id).first()
-        if user:
-            if user.check_password(form.curr_password.data):
-                user.set_password(form.new_password.data)
-                db_sess.add(user)
-                db_sess.commit()
-                return redirect('/profile')
-            else:
-                form.email.data = user.email
-                return render_template('user-change.html', title='Ваш профиль', form=form, message='Неверный пароль')
-        else:
-            abort(404)
-
-    return render_template('user-change.html', title='Ваш профиль', form=form)
 
 
 #              !!!!! БЛОК СВЯЗАННЫЙ С МАГАЗИНОМ !!!!!

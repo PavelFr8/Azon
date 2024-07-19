@@ -40,7 +40,7 @@
             <img src="{{ url_for('static', filename='img/header/user.png') }}" alt="mdo" width="32" height="32" class="rounded-circle">
           </a>
           <ul class="dropdown-menu text-small">
-            <li><a class="dropdown-item" href="{{ url_for('menu.index') }}">Профиль</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('user_profile.profile') }}">Профиль</a></li>
             {% for item in shops %}
             <li><a class="dropdown-item" href="{{ url_for('shop_profile', id=item.id) }}">{{ item.name }}</a></li>
             {% endfor %}

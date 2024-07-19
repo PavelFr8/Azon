@@ -13,7 +13,7 @@
             <br>
             <h2 class="card-title font-weight-bold">Пароль</h2>
             <p class="font-weight-normal fs-5">•••••••••••••••••••••••</p>
-            <a href="{{ url_for('user_change', id=current_user.id) }}" class="btn btn-primary" type="button">Изменить пароль</a>
+            <a href="{{ url_for('user_profile.change_password', id=current_user.id) }}" class="btn btn-primary" type="button">Изменить пароль</a>
         </div>
     </div>
 </main>
