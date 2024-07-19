@@ -37,6 +37,9 @@ def create_app():
     import app.user_profile as user_profile
     app.register_blueprint(user_profile.module)
 
+    import app.shop as shop
+    app.register_blueprint(shop.module)
+
     return app
 
 from . import models

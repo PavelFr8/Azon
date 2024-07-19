@@ -23,6 +23,8 @@ def load_user(user_id):
             return user
 
 
+
+
 # Главная страница
 @module.route('/')
 def index():

@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, request, abort, url_for
 from flask_login import LoginManager, login_required, current_user
 
-from func.allowes_file import allowed_file
+from app.utils.allowed_file import allowed_file
 from func.yandex_map_api.get_shops import find_shops
 
 from data.category_loader import load_categories
@@ -12,8 +12,6 @@ from data.shops import Shop
 from data.items import Item
 from data.categories import Category
 
-from forms.shopform import ShopForm
-from forms.shopchange import ShopChangeForm
 from forms.itemform import ItemForm
 from forms.commentform import CommentForm
 from forms.buyform import BuyForm
@@ -44,20 +42,19 @@ def inject_shops():
     return dict(shops=shops, categories=categories)
 
 
-
 # Отображение товаров по выбранной категории
-@app.route('/items_by_category/<int:category_id>')
+@app.route('/categories/items_by_category/<int:category_id>')
 def items_by_category(category_id):
-    db_sess = get_db_session()
-    category = db_sess.query(Category).get(category_id)
+    category = Category.query.get(category_id)
     if not category:
         abort(404)
 
-    items = db_sess.query(Item).filter(Item.category_id.ilike(f'%{category_id}%')).all()
+    items = Item.query.filter(category_id.ilike(f'%{category_id}%')).all()
     for item in items:
         item.logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
 
     return render_template('item.html', title=f'Товары в категории {category.name}', items=items)
+
 
 
 #              !!!!! БЛОК СВЯЗАННЫЙ С ПОЛЬЗОВАТЕЛЕМ !!!!!
@@ -65,97 +62,6 @@ def items_by_category(category_id):
 
 #              !!!!! БЛОК СВЯЗАННЫЙ С МАГАЗИНОМ !!!!!
 
-
-# Регистрация нового магазина
-@app.route('/shopregister', methods=['POST', 'GET'])
-@login_required
-def shop_register():
-    form = ShopForm()
-    if form.validate_on_submit():
-        db_sess = get_db_session()
-        if db_sess.query(Shop).filter(Shop.name == form.name.data).first():
-            return render_template('shop-register.html', title='Регистрация', form=form,
-                                   message='Магазин с таким названием уже существует')
-        img_file = request.files['img']
-        if img_file and allowed_file(img_file.filename):  # проверка, что файл является фото
-            img_binary = img_file.read()
-            db_sess = get_db_session()
-            shop = Shop(
-                name=form.name.data,
-                about=form.about.data,
-                img=img_binary,
-                owner_id=current_user.id,
-                contact=current_user.email
-            )
-            db_sess.add(shop)
-            db_sess.commit()
-            return redirect('/')
-        else:
-            return render_template('shop-register.html',
-                                   title='Регистрация магазина',
-                                   message='Недопустимое расширение файла изображения. Разрешены только PNG, JPG и JPEG'
-                                   , form=form)
-    return render_template('shop-register.html', title='Регистрация магазина', form=form)
-
-
-# Профиль магазина
-@app.route('/shop_profile/<int:id>')
-def shop_profile(id):
-    db_sess = get_db_session()
-    shop = db_sess.query(Shop).filter(Shop.id == id).first()
-    items = db_sess.query(Item).filter(Item.seller_id == id).all()
-
-    # Преобразуем бинарные данные логотипа в base64
-    logo_data = base64.b64encode(shop.img).decode('utf-8')
-    for item in items:
-        item.logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
-
-    return render_template('shop-profile.html', shop=shop, items=items, title=f'Профиль магазина "{shop.name}"',
-                           logo_data=logo_data)
-
-
-# Редактирование данных о магазине
-@app.route('/shop/<int:id>', methods=['GET', 'POST'])
-@login_required
-def shop_change(id: int):
-    form = ShopChangeForm()
-    if request.method == 'GET':
-        db_sess = get_db_session()
-        shop = db_sess.query(Shop).filter(Shop.id == id, Shop.owner_id == current_user.id).first()
-
-        # Преобразуем бинарные данные логотипа в base64
-        logo_data = base64.b64encode(shop.img).decode('utf-8')
-        if shop:
-            form.name.data = shop.name
-            form.about.data = shop.about
-            form.contact.data = shop.contact
-            form.img.data = logo_data
-        else:
-            abort(404)
-    if form.validate_on_submit():
-        db_sess = get_db_session()
-        shop = db_sess.query(Shop).filter(Shop.id == id, Shop.owner_id == current_user.id).first()
-        img_file = request.files['img']
-        if shop:
-            if img_file and allowed_file(img_file.filename):  # проверка, что файл является фото
-                img_binary = img_file.read()
-                shop.name = form.name.data
-                shop.about = form.about.data
-                shop.contact = form.contact.data
-                shop.img = img_binary
-                db_sess.commit()
-                return redirect(f'/shop_profile/{id}')
-            else:
-                return render_template('shop-change.html',
-                                       title='Изменение данных',
-                                       message='Недопустимое расширение файла изображения. Разрешены только '
-                                               'PNG, JPG и JPEG'
-                                       , form=form)
-
-        else:
-            abort(404)
-
-    return render_template('shop-change.html', title='Изменение данных', form=form)
 
 
 #              !!!!! БЛОК СВЯЗАННЫЙ С ТОВАРАМИ !!!!!
