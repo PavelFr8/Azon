@@ -1,5 +1,5 @@
 from flask import request, render_template, abort, redirect, url_for
-from flask_login import current_user, login_required
+from flask_login import login_required
 
 import base64
 
@@ -41,15 +41,15 @@ def register(id):
             return render_template('item/item-register.html',
                                    title='Добавление нового товара',
                                    message='Недопустимое расширение файла изображения. Разрешены только PNG, JPG и JPEG'
-                                   , form=form)
-    return render_template('item/item-register.html', title='Добавление нового товара', form=form)
+                                   , form=form, item=None)
+    return render_template('item/item-register.html', title='Добавление нового товара', form=form, item=None)
 
 
 # Профиль товара
 @module.route('/profile/<int:id>')
 def profile(id):
     form = CommentForm()  # Создаем экземпляр формы
-    item = Item.query.filter_by(id=id).first()
+    item: Item = Item.query.filter(Item.id == id).first()
     shop: Shop = Shop.query.get(item.seller_id)
     comments = []
     if item.comments:
@@ -111,7 +111,7 @@ def delete(id):
     else:
         abort(404)
 
-    return redirect(url_for('item.profile', id=item.seller_id))
+    return redirect(url_for('shop.profile', id=item.seller_id))
 
 
 # Изменение данных о товаре
@@ -125,11 +125,12 @@ def change(id):
         abort(404)
 
     if request.method == 'GET':
-        logo_data = base64.b64encode(item.img).decode('utf-8')
+        logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
+
         categories = item.category_id.split(',')
         ctgr = []
         for category_id in categories:
-            category: Category = Category.query.get(int(category_id))
+            category = Category.query.get(int(category_id))
             if category:
                 ctgr.append(category)
 
@@ -139,22 +140,22 @@ def change(id):
         form.category1.data = ctgr[0].name if ctgr else ''
         form.category2.data = ctgr[1].name if len(ctgr) > 1 else ''
         form.category3.data = ctgr[2].name if len(ctgr) > 2 else ''
-        form.img.data = logo_data
+
+        return render_template('item/item-register.html', title='Изменение данных', form=form, item=item,
+                               logo_data=logo_data)
 
     if form.validate_on_submit():
         img_file = request.files['img']
-        if img_file.filename == '':
-            return render_template('item/item-register.html',
-                                   title='Изменение данных',
-                                   message='Файл изображения не выбран.', form=form)
+        if img_file and img_file.filename != '':
+            if not allowed_file(img_file.filename):
+                return render_template('item/item-register.html',
+                                       title='Изменение данных',
+                                       message='Недопустимое расширение файла изображения. Разрешены только PNG, JPG и JPEG',
+                                       form=form,
+                                       item=item)
+            img_binary = img_file.read()
+            item.img = img_binary
 
-        if not allowed_file(img_file.filename):
-            return render_template('item/item-register.html',
-                                   title='Изменение данных',
-                                   message='Недопустимое расширение файла изображения. Разрешены только PNG, JPG и JPEG',
-                                   form=form)
-
-        img_binary = img_file.read()
         categories = [form.category1.data, form.category2.data, form.category3.data]
         category_ids = []
         for category in categories:
@@ -166,9 +167,8 @@ def change(id):
         item.about = form.about.data
         item.price = form.price.data
         item.category_id = ','.join(map(str, category_ids))
-        item.img = img_binary
         db.session.commit()
 
-        return redirect(url_for('item.profile', id=item.seller_id))
+        return redirect(url_for('item.profile', id=id))
 
-    return render_template('item/item-register.html', title='Изменение данных', form=form)
+    return render_template('item/item-register.html', title='Изменение данных', form=form, item=item)

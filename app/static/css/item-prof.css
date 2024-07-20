@@ -34,21 +34,22 @@
     border-radius: 8px;
     width 50%;
 }
+
 .o {
     filter: invert(100%);
     margin-left: 20px;
 }
 
 @media only screen and (min-width: 950px) {
-.price {
-    font-size: 25px;
-}
-.o {
-    display: flex;
-    margin: auto;
-    width: 32px;
-    height: 32px;
-}
+    .price {
+        font-size: 25px;
+    }
+    .o {
+        display: flex;
+        margin: auto;
+        width: 32px;
+        height: 32px;
+    }
 }
 
 .container {
@@ -59,7 +60,7 @@
     flex-direction: column;
 }
 
-.container .star-widget input{
+.container .star-widget input {
     display: none;
 }
 
@@ -67,13 +68,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: row-reverse;
 }
 
 .star-widget label {
     font-size: 25px;
     color: #444;
     padding: 5px;
-    float: right;
+    cursor: pointer;
     transition: all 0.2s ease;
 }
 
@@ -88,7 +90,7 @@ input:not(:checked) ~ label:hover ~ label {
     color: #fd4;
 }
 
-input:checked ~ label{
+input:checked ~ label {
     color: #fd4;
 }
 

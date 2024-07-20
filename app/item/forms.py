@@ -14,7 +14,7 @@ class ItemForm(FlaskForm):
     name = StringField('Название товара', validators=[DataRequired()])
     price = IntegerField('Цена', validators=[DataRequired()])
     about = TextAreaField('О товаре', validators=[DataRequired()])
-    img = FileField('Фотография товара', validators=[DataRequired()])
+    img = FileField('Фотография товара')
     category1 = SelectField('Выберите категорию товара', validators=[DataRequired()], choices=categories,
                             render_kw={"class": "form-control", "id": "category3"})
     category2 = SelectField('Выберите категорию товара', choices=categories,
