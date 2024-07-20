@@ -47,4 +47,6 @@ flask db migrate -m "Initial migration."
 
 flask db upgrade
 
+flask category_load
+
 flask run

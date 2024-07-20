@@ -16,7 +16,7 @@
             <h2 class="card-title font-weight-bold">Контактная информация</h2>
             <p class="font-weight-normal fs-5">{{ shop.contact }}</p>
             {% if shop.owner_id == current_user.id %}
-            <a href="{{ url_for('shop_change', id=shop.id) }}" class="btn btn-primary" type="button">Изменить данные</a>
+            <a href="{{ url_for('shop.change_info', id=shop.id) }}" class="btn btn-primary" type="button">Изменить данные</a>
             {% endif %}
         </div>
     </div>
@@ -24,14 +24,14 @@
 <div style="text-align: center; margin-top: 50px; margin-bottom: 50px;">
     <h2 class="card-title">Товары
         {% if shop.owner_id == current_user.id %}
-        <a href="{{ url_for('item_register', id=shop.id) }}" class="btn btn-primary" style="margin-left: 20px;">Добавить</a>
+        <a href="{{ url_for('item.register', id=shop.id) }}" class="btn btn-primary" style="margin-left: 20px;">Добавить</a>
         {% endif %}
     </h2>
 </div>
 {% for item in items %}
 <div class="col-md-6 border rounded-3 iiii border-3">
     <div style="margin: auto;">
-        <a href="{{ url_for('item_profile', id=item.id) }}" style="color: black; text-decoration: none;">
+        <a href="{{ url_for('item.profile', id=item.id) }}" style="color: black; text-decoration: none;">
         {% if item.logo_data %}
             <img src="data:image/jpeg;base64,{{ item.logo_data }}" alt="Фото товара" class="rounded-3 border border-3 border-primary" style="margin-right: 40px;">
         {% endif %}
@@ -43,8 +43,8 @@
         </div>
         {% if shop.owner_id == current_user.id %}
         <div style="margin: 0 12px; display: flex;">
-            <a href="{{ url_for('item_change', id=item.id) }}" class="btn btn-primary" style="margin-right: 8px;">Изменить</a>
-            <a href="{{ url_for('delete_item', id=item.id) }}" class="btn btn-danger">Удалить</a>
+            <a href="{{ url_for('item.change', id=item.id) }}" class="btn btn-primary" style="margin-right: 8px;">Изменить</a>
+            <a href="{{ url_for('item.delete', id=item.id) }}" class="btn btn-danger">Удалить</a>
         </div>
         {% endif %}
         </a>

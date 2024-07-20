@@ -18,9 +18,6 @@ class User(db.Model, UserMixin):
 
     shop = orm.relationship('Shop', back_populates='user')
 
-    def __repr__(self) -> str:
-        return f'<{self.id}> {self.email}'
-
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
 
@@ -38,13 +35,12 @@ class Item(db.Model):
     price = sa.Column(sa.Integer, nullable=False)
     about = sa.Column(sa.String, nullable=False)
     img = sa.Column(sa.LargeBinary, nullable=False)
-    category_id = sa.Column(sa.Integer, sa.ForeignKey("categories.id"), nullable=False)
+    category_id = sa.Column(sa.String, nullable=False)
     seller_id = sa.Column(sa.Integer, sa.ForeignKey("shops.id"))
     comments = sa.Column(sa.String, nullable=True)
     rating = sa.Column(sa.String, nullable=True, default="0;0;0")
 
     shop = orm.relationship('Shop')
-    category = orm.relationship('Category', back_populates='items')
 
 
 class Shop(db.Model):
@@ -64,5 +60,3 @@ class Category(db.Model):
     __tablename__ = 'categories'
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     name = sa.Column(sa.String, nullable=False)
-
-    items = orm.relationship('Item', back_populates='category')

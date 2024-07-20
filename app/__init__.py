@@ -40,6 +40,9 @@ def create_app():
     import app.shop as shop
     app.register_blueprint(shop.module)
 
+    import app.item as item
+    app.register_blueprint(item.module)
+
     return app
 
 from . import models

@@ -11,7 +11,7 @@
             <div class="card-body">
               <h5 class="card-title">{{ shop.name }}</h5>
               <p class="card-text">{{ shop.about }}</p>
-              <a href="/shop_profile/{{ shop.id }}" class="btn btn-primary">Перейти в магазин</a>
+              <a href="{{ url_for('shop.profile', id=shop.id) }}" class="btn btn-primary">Перейти в магазин</a>
             </div>
           </div>
         </div>

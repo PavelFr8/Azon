@@ -42,7 +42,7 @@ def register():
 
 # Профиль магазина
 @module.route('/profile/<int:id>')
-def shop_profile(id):
+def profile(id):
     shop = Shop.query.filter_by(id=id).first()
     items = Item.query.filter_by(seller_id=id).all()
 
@@ -58,7 +58,7 @@ def shop_profile(id):
 # Редактирование данных о магазине
 @module.route('/<int:id>', methods=['GET', 'POST'])
 @login_required
-def shop_info_change(id: int):
+def change_info(id: int):
     form = ShopChangeInfoForm()
     if request.method == 'GET':
         shop = Shop.query.filter_by(id=id, owner_id=current_user.id).first()
@@ -83,13 +83,13 @@ def shop_info_change(id: int):
                 shop.contact = form.contact.data
                 shop.img = img_binary
                 db.session.commit()
-                return redirect(f'shop_profile', id=id)
+                return redirect(url_for('shop.profile', id=id))
             else:
                 return render_template('shop-change.html',
                                        title='Изменение данных',
                                        message='Недопустимое расширение файла изображения. Разрешены только '
-                                               'PNG, JPG и JPEG'
-                                       , form=form)
+                                               'PNG, JPG и JPEG',
+                                       form=form)
 
         else:
             abort(404)

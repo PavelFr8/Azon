@@ -42,7 +42,7 @@
           <ul class="dropdown-menu text-small">
             <li><a class="dropdown-item" href="{{ url_for('user_profile.profile') }}">Профиль</a></li>
             {% for item in shops %}
-            <li><a class="dropdown-item" href="{{ url_for('shop.shop_profile', id=item.id) }}">{{ item.name }}</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('shop.profile', id=item.id) }}">{{ item.name }}</a></li>
             {% endfor %}
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="{{ url_for('registration.logout') }}">Выйти</a></li>

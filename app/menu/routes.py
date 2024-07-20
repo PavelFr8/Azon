@@ -1,4 +1,4 @@
-from flask import request, render_template
+from flask import request, render_template, abort
 from flask_login import current_user, login_user, login_required
 
 import base64
@@ -21,8 +21,6 @@ def load_user(user_id):
         if user:
             login_user(user)
             return user
-
-
 
 
 # Главная страница
@@ -62,12 +60,12 @@ def categories():
 
 
 # Страница "Продавцы"
-@module.route('/sellers')
+@module.route('/shops')
 def shops():
     shops = Shop.query.all()
     for shop in shops:
         shop.logo_data = base64.b64encode(shop.img).decode('utf-8') if shop.img else None
-    return render_template('menu/sellers.html', title='Продавцы', shops=shops)
+    return render_template('menu/shops.html', title='Продавцы', shops=shops)
 
 
 # Поиск по имени товара
@@ -82,3 +80,17 @@ def search_item():
         item.logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
 
     return render_template("item.html", title='Результаты поиска', items=items, text=query)
+
+
+# Отображение товаров по выбранной категории
+@module.route('/categories/items/<int:category_id>')
+def items_by_category(category_id):
+    category = Category.query.get(category_id)
+    if not category:
+        abort(404)
+
+    items = Item.query.filter(Item.category_id.ilike(f'%{category_id}%')).all()
+    for item in items:
+        item.logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
+
+    return render_template('item.html', title=f'Товары в категории {category.name}', items=items)
