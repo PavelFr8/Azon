@@ -39,8 +39,6 @@ pip install -r requirements.txt
 ## Запуск
 source venv/bin/activate
 
-export FLASK_APP=app
-
 flask db init
 
 flask db migrate -m "Initial migration."
