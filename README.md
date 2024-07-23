@@ -7,10 +7,11 @@
 
 ## Использованные технологии
 * Python 3.9;
-* HTML, CSS;
 * Flask (Web application framework);
 * PostgreSQL (database);
 * SQLAlchemy (working with database from Python);
+* HTML, CSS;
+* Bootstrap (CSS and JS framework);
 * Jinja2 (Templating engine);
 * [Yandex Maps API](https://yandex.ru/maps-api/) (finding places);
 

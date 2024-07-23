@@ -65,15 +65,15 @@
         </form>
 
         {% if current_user.is_authenticated %}
-        <a href="/cart" class="col-1 col-lg-auto mb-0 mb-lg-0 me-lg-3 ttt"><img src="{{ url_for('static', filename='img/header/shopping_cart.svg') }}" alt="mdo" width="32" height="32"></a>
+        <a href="{{ url_for('shopping_cart.cart') }}" class="col-1 col-lg-auto mb-0 mb-lg-0 me-lg-3 ttt"><img src="{{ url_for('static', filename='img/header/shopping_cart.svg') }}" alt="mdo" width="32" height="32"></a>
         <div class="dropdown text-end">
           <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
             <img src="{{ url_for('static', filename='img/header/user.png') }}" alt="mdo" width="32" height="32" class="rounded-circle">
           </a>
           <ul class="dropdown-menu text-small">
             <li><a class="dropdown-item" href="{{ url_for('user_profile.profile') }}">Профиль</a></li>
-            {% for item in shops %}
-            <li><a class="dropdown-item" href="{{ url_for('shop.profile', id=item.id) }}">{{ item.name }}</a></li>
+            {% for shop in shops %}
+            <li><a class="dropdown-item" href="{{ url_for('shop.profile', id=shop.id) }}">{{ shop.name }}</a></li>
             {% endfor %}
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="{{ url_for('registration.logout') }}">Выйти</a></li>

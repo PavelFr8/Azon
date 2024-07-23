@@ -1,62 +1,64 @@
-from flask import request, render_template, abort, redirect, url_for
-from flask_login import login_required
+from flask import render_template, flash, redirect, url_for
+from flask_login import login_required, current_user
 
 import base64
 
-from app.models import Item, Shop, Category, User
-from app import db
-from app.utils.allowed_file import allowed_file
+from app.models import Item, User, ShoppingCart
+from app import db, logger
 from . import module
 
 
 # Добавление товара в корзину
-@app.route('/add_to_cart/<int:id>')
+@module.route('/add/<int:id>')
 @login_required
-def add_to_cart(id):
-    db_sess = get_db_session()
-    item: Item = db_sess.query(Item).get(id)
-    user: User = db_sess.query(User).get(current_user.id)
-    if item and user:
-        if user.shopping_cart:
-            cart = user.shopping_cart.split(',')
-            if f'{item.id}' not in cart:
-                user.shopping_cart += f',{item.id}'
+def add(id):
+    try:
+        shopping_cart: ShoppingCart = ShoppingCart.query.filter(ShoppingCart.user_id == current_user.id,
+                                                                ShoppingCart.item_id == id).first()
+        if shopping_cart:
+            shopping_cart.amount += 1
         else:
-            user.shopping_cart = item.id
-        db_sess.commit()
-    return redirect(url_for('item_profile', id=id))
+            shopping_cart = ShoppingCart(
+                user_id=current_user.id,
+                item_id=id,
+                amount=1
+            )
+        db.session.add(shopping_cart)
+        db.session.commit()
+        return redirect(url_for("item.profile", id=id))
+    except Exception as e:
+        logger.error(f"Error add item to shopping cart: {e}")
+        db.session.rollback()
+        flash("Произошла ошибка при сохранении в корзину", 'danger')
 
 
 # Отображение корзины
-@app.route('/cart')
+@module.route('/')
 @login_required
 def cart():
-    db_sess = get_db_session()
-    items_in_cart = []
-    items = []
     total_price = 0
-    if current_user.shopping_cart:
-        items_in_cart = [int(id) for id in current_user.shopping_cart.split(',') if id]
-    if items_in_cart:
-        items = db_sess.query(Item).filter(Item.id.in_(items_in_cart)).all()
-    if items:
-        for item in items:
-            item.logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
-            total_price += item.price
-    return render_template('cart.html', title='Корзина', items=items, total_price=total_price)
+    items = []
+    shopping_carts = ShoppingCart.query.filter_by(user_id=current_user.id).all()
+    for cart in shopping_carts:
+        item: Item = Item.query.get(cart.item_id)
+        total_price += item.price
+        item.logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
+        item.amount = cart.amount
+        items.append(item)
+    return render_template('shopping_cart/cart.html', title='Корзина', items=items, total_price=total_price)
 
 
 # Удаление товара из корзины
-@app.route('/delete_from_cart/<int:id>')
+@module.route('/delete/<int:id>')
 @login_required
-def delete_from_cart(id):
-    db_sess = get_db_session()
-    user: User = db_sess.query(User).get(current_user.id)
-    if user:
-        user.shopping_cart = user.shopping_cart.replace(f",{id}", '')
-        sp = user.shopping_cart.split(',')
-        if f'{id}' in sp:
-            sp.remove(f'{id}')
-            user.shopping_cart = ','.join(sp)
-        db_sess.commit()
-    return redirect(url_for('cart'))
+def delete(id):
+    try:
+        shopping_cart: ShoppingCart = ShoppingCart.query.filter(ShoppingCart.user_id == current_user.id,
+                                                                ShoppingCart.item_id == id).first()
+        db.session.delete(shopping_cart)
+        db.session.commit()
+        return redirect(url_for('shopping_cart.cart'))
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error delete item from shopping cart: {e}")
+        flash("Произошла ошибка при удалении товара из корзины", 'danger')

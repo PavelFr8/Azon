@@ -84,7 +84,7 @@
                         <h2 class="rating-value">Рейтинг: {{ item.rating.split(';')[2] }}</h2>
                     </div>
                     {% if current_user.is_authenticated %}
-                    <a href="/" class="btn btn-primary r">Добавить в корзину<img src="{{ url_for('static', filename='img/header/shopping_cart.svg') }}" alt="mdo" width="32" height="32" class="o"></a>
+                    <a href="{{ url_for('shopping_cart.add', id=item.id) }}" class="btn btn-primary r">Добавить в корзину<img src="{{ url_for('static', filename='img/header/shopping_cart.svg') }}" alt="mdo" width="32" height="32" class="o"></a>
                     {% else %}
                     <a href="{{ url_for('registration.login') }}" class="btn btn-primary r">Добавить в корзину<img src="{{ url_for('static', filename='img/header/shopping_cart.svg') }}" alt="mdo" width="32" height="32" class="o"></a>
                     {% endif %}

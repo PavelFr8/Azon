@@ -11,12 +11,12 @@ class User(db.Model, UserMixin):
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     email = sa.Column(sa.String, unique=True, nullable=False, index=True)
     hashed_password = sa.Column(sa.String, nullable=False)
-    shopping_cart = sa.Column(sa.String, nullable=True)
     delivery_address = sa.Column(sa.String, nullable=True)  # тут пустота true но надо будеть сделать false
     created_date = sa.Column(sa.DateTime, default=datetime.datetime.now)
     address = sa.Column(sa.String, nullable=True, default='Не выбран')
 
     shop = orm.relationship('Shop', back_populates='user')
+    cart = orm.relationship('ShoppingCart', back_populates='user')
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
@@ -41,6 +41,7 @@ class Item(db.Model):
     rating = sa.Column(sa.String, nullable=True, default="0;0;0")
 
     shop = orm.relationship('Shop')
+    cart = orm.relationship("ShoppingCart", back_populates="item")
 
 
 class Shop(db.Model):
@@ -60,3 +61,14 @@ class Category(db.Model):
     __tablename__ = 'categories'
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     name = sa.Column(sa.String, nullable=False)
+
+
+class ShoppingCart(db.Model):
+    __tablename__ = 'carts'
+    id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
+    user_id = sa.Column(sa.Integer, sa.ForeignKey("users.id"), nullable=False)
+    item_id = sa.Column(sa.Integer, sa.ForeignKey("items.id"), nullable=False)
+    amount = sa.Column(sa.Integer, nullable=False)
+
+    user = orm.relationship("User")
+    item = orm.relationship("Item")

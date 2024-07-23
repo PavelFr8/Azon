@@ -3,7 +3,7 @@ from flask_login import current_user, login_required
 
 import base64
 
-from app.models import User, Item
+from app.models import Item, User
 from app import db, logger
 from . import module
 from .forms import UserChangePasswordForm
@@ -13,7 +13,6 @@ from .forms import UserChangePasswordForm
 @module.route('/profile')
 @login_required
 def profile():
-    user: User = User.query.get(current_user.id)
     items_in_cart = []
     items = []
     if current_user.shopping_cart:
@@ -23,7 +22,7 @@ def profile():
     if items:
         for item in items:
             item.logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
-    return render_template('user_profile/profile.html', user=user, title='Ваш профиль', items=items)
+    return render_template('user_profile/profile.html', user=current_user, title='Ваш профиль', items=items)
 
 
 # Обновление пароля аккаунта
@@ -32,12 +31,11 @@ def profile():
 def change_password(id: int):
     form = UserChangePasswordForm()
     try:
+        user: User = current_user
         if request.method == 'GET':
-            user: User = User.query.filter(User.id == id, current_user.id == id).first_or_404()
             form.email.data = user.email
 
-        if form.validate_on_submit():
-            user: User = User.query.filter(User.id == id, current_user.id == id).first_or_404()
+        elif form.validate_on_submit():
             if user.check_password(form.curr_password.data):
                 user.set_password(form.new_password.data)
                 db.session.commit()
