@@ -7,9 +7,13 @@ from flask_login import LoginManager
 
 from dotenv import load_dotenv
 
+import logging
+
 
 db = SQLAlchemy()  # create database
 login_manager = LoginManager()  # create manager for login
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)  # create logger
 
 
 def create_app():
@@ -27,22 +31,24 @@ def create_app():
         except Exception as e:
             app.logger.error(f"Failed to initialize DebugToolbarExtension: {e}")
 
+    # register errors handler
+    import app.errors as errors
+    app.register_blueprint(errors.module)
+
     # register all app modules
-    import app.menu as menu
+    import app.modules.menu as menu
     app.register_blueprint(menu.module)
 
-    import app.registration as registration
+    import app.modules.registration as registration
     app.register_blueprint(registration.module)
 
-    import app.user_profile as user_profile
+    import app.modules.user_profile as user_profile
     app.register_blueprint(user_profile.module)
 
-    import app.shop as shop
+    import app.modules.shop as shop
     app.register_blueprint(shop.module)
 
-    import app.item as item
+    import app.modules.item as item
     app.register_blueprint(item.module)
 
     return app
-
-from . import models

@@ -4,23 +4,7 @@ from flask_login import current_user, login_user, login_required
 import base64
 
 from app.models import User, Item, Shop, Category
-from app import login_manager
 from . import module
-
-
-# настройка передачи залогиненных пользователей
-@login_manager.user_loader
-def load_user(user_id):
-    user = User.query.get(user_id)
-    if user:
-        return user
-    # Проверяем куки
-    username = request.cookies.get('username')
-    if username:
-        user = User.query.filter_by(email=username).first()
-        if user:
-            login_user(user)
-            return user
 
 
 # Главная страница
@@ -36,7 +20,6 @@ def index():
     for item in items:
         item.logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
     return render_template("item.html", title='Azon', items=items)
-
 
 
 # Страница "Стать продавцом"

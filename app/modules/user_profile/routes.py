@@ -1,10 +1,10 @@
-from flask import request, render_template, abort, redirect, url_for
+from flask import request, render_template, flash, redirect, url_for
 from flask_login import current_user, login_required
 
 import base64
 
 from app.models import User, Item
-from app import db
+from app import db, logger
 from . import module
 from .forms import UserChangePasswordForm
 
@@ -31,24 +31,25 @@ def profile():
 @login_required
 def change_password(id: int):
     form = UserChangePasswordForm()
-    if request.method == 'GET':
-        user: User = User.query.filter(id == id, current_user.id == id).first()
-        if user:
+    try:
+        if request.method == 'GET':
+            user: User = User.query.filter(User.id == id, current_user.id == id).first_or_404()
             form.email.data = user.email
-        else:
-            abort(404)
-    if form.validate_on_submit():
-        user: User = User.query.filter(id == id, current_user.id == id).first()
-        if user:
+
+        if form.validate_on_submit():
+            user: User = User.query.filter(User.id == id, current_user.id == id).first_or_404()
             if user.check_password(form.curr_password.data):
                 user.set_password(form.new_password.data)
-                db.session.add(user)
                 db.session.commit()
-                return redirect(url_for('profile'))
+                flash('Пароль успешно изменен!', 'success')
+                return redirect(url_for('user_profile.profile'))
             else:
                 form.email.data = user.email
-                return render_template('user_profile/change_password.html', title='Ваш профиль', form=form, message='Неверный пароль')
-        else:
-            abort(404)
+                flash('Неверный текущий пароль', 'warning')
+
+    except Exception as e:
+        logger.error(f"Error changing password for user {id}: {e}")
+        db.session.rollback()
+        flash('Произошла ошибка при изменении пароля.', 'danger')
 
     return render_template('user_profile/change_password.html', title='Ваш профиль', form=form)

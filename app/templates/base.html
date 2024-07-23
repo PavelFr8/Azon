@@ -7,6 +7,37 @@
     <title>{{ title }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="shortcut icon" href="{{ url_for('static', filename='img/header/favicon.png') }}" type="image/png">
+    <style>
+        /* Additional CSS for positioning flash messages */
+        .flashes {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+        }
+        .alert {
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+        .alert .close {
+            border: none;
+            background: none;
+            padding: 0;
+            margin: 0;
+            font-size: 1.5rem;
+            line-height: 1;
+            color: #000;
+            opacity: 0.5;
+        }
+        .alert .close:hover {
+            color: #000;
+            opacity: 0.75;
+        }
+        .alert .close:focus {
+            box-shadow: none;
+            outline: none;
+        }
+    </style>
 </head>
 <body>
 <header class="p-9 mb-9 border-bottom" style="padding-bottom: 5px;">
@@ -56,7 +87,40 @@
       </div>
     </div>
 </header>
+    <!-- Flash messages section -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flashes">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Automatically hide flash messages after 5 seconds
+    setTimeout(function() {
+        $('.flashes .alert').fadeOut('slow', function() {
+            $(this).remove();
+        });
+    }, 5000);
+
+    // Manually hide flash messages on close button click
+    $('.flashes .alert .close').on('click', function() {
+        $(this).closest('.alert').fadeOut('slow', function() {
+            $(this).remove();
+        });
+    });
+});
+</script>
 <!-- Begin page content -->
 <main role="main" class="container">
     {% block content %}{% endblock %}

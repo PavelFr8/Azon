@@ -1,10 +1,13 @@
+from flask import request
+from flask_login import login_user
 from flask_migrate import Migrate
-from flask_script import Manager
+
 import click
 
 from app import create_app, db, login_manager
 from app.utils.inject import inject
 from app.utils.load_categories import load_categories
+from app.models import User
 
 
 app = create_app()
@@ -19,10 +22,20 @@ def category_load():
     load_categories()
 
 app.cli.add_command(category_load)
-manager = Manager(app)
 migrate = Migrate(app, db)
 login_manager.init_app(app)
 app.context_processor(inject)
 
-
-
+# настройка передачи залогиненных пользователей
+@login_manager.user_loader
+def load_user(user_id):
+    user = User.query.get(user_id)
+    if user:
+        return user
+    # Проверяем куки
+    username = request.cookies.get('username')
+    if username:
+        user = User.query.filter_by(email=username).first()
+        if user:
+            login_user(user)
+            return user
