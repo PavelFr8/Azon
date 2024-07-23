@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Доступ запрещен</h1>
+    <p>Извините, у вас нет прав доступа к этому ресурсу.</p>
+    <h2><a href="{{ url_for('menu.index') }}" style="text-decoration:none"><b>Назад</b></a></h2>
+{% endblock %}

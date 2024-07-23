@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Страница не найдена</h1>
+    <p>Извините, запрашиваемая вами страница не существует.</p>
+    <h2><a href="{{ url_for('menu.index') }}" style="text-decoration:none"><b>Назад</b></a></h2>
+{% endblock %}

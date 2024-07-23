@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Произошла непредвиденная ошибка</h1>
+    <p>Администратор был уведомлен. Извините за неудобства!</p>
+    <h2><a href="{{ url_for('menu.index') }}" style="text-decoration:none"><b>Назад</b></a></h2>
+{% endblock %}
