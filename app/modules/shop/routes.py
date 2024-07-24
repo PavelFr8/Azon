@@ -1,4 +1,4 @@
-from flask import request, render_template, abort, redirect, url_for, flash
+from flask import request, render_template, redirect, url_for, flash
 from flask_login import current_user, login_required
 
 import base64
@@ -48,10 +48,10 @@ def register():
 
 
 # Профиль магазина
-@module.route('/profile/<int:id>')
-def profile(id):
-    shop = Shop.query.filter_by(id=id).first()
-    items = Item.query.filter_by(seller_id=id).all()
+@module.route('/profile/<string:shop_name>')
+def profile(shop_name):
+    shop = Shop.query.filter_by(name=shop_name).first_or_404()
+    items = Item.query.filter_by(seller_id=shop.id).all()
 
     logo_data = base64.b64encode(shop.img).decode('utf-8')  # Преобразуем бинарные данные логотипа в base64
     for item in items:
@@ -62,40 +62,39 @@ def profile(id):
 
 
 # Редактирование данных о магазине
-@module.route('change/<int:id>', methods=['GET', 'POST'])
+@module.route('change/<string:shop_name>', methods=['GET', 'POST'])
 @login_required
-def change_info(id: int):
+def change_info(shop_name):
     form = ShopChangeInfoForm()
     try:
-        shop = Shop.query.filter_by(id=id, owner_id=current_user.id).first_or_404()
+        shop = Shop.query.filter_by(name=shop_name, owner_id=current_user.id).first_or_404()
         if request.method == 'GET':
-            logo_data = base64.b64encode(shop.img).decode('utf-8')  # Преобразуем бинарные данные логотипа в base64
+            logo_data = base64.b64encode(shop.img).decode('utf-8') if shop.img else None
             form.name.data = shop.name
             form.about.data = shop.about
             form.contact.data = shop.contact
-            form.img.data = logo_data
-        elif form.validate_on_submit():
+            return render_template('shop/shop-info-change.html', title='Изменение данных', form=form, shop=shop,
+                                   logo_data=logo_data)
+        if form.validate_on_submit():
             img_file = request.files['img']
-            if img_file and allowed_file(img_file.filename):  # проверка, что файл является фото
+            if img_file and img_file.filename != '':
+                if not allowed_file(img_file.filename):
+                    return render_template('shop-change.html',
+                                           title='Изменение данных',
+                                           message='Недопустимое расширение файла изображения. Разрешены только '
+                                                   'PNG, JPG и JPEG',
+                                           form=form, shop=shop)
                 img_binary = img_file.read()
                 shop.img = img_binary
-            else:
-                return render_template('shop-change.html',
-                                        title='Изменение данных',
-                                        message='Недопустимое расширение файла изображения. Разрешены только '
-                                                'PNG, JPG и JPEG',
-                                        form=form)
             shop.name = form.name.data
             shop.about = form.about.data
             shop.contact = form.contact.data
 
             db.session.commit()
             flash('Данные магазина успешно обновлены!', 'success')
-            return redirect(url_for('shop.profile', id=id))
+            return redirect(url_for('shop.profile', shop_name=shop.name))
 
     except Exception as e:
         logger.error(f"Error updating shop info: {e}")
         db.session.rollback()
         flash('Произошла ошибка при обновлении данных магазина.', 'danger')
-
-    return render_template('shop/shop-info-change.html', title='Изменение данных', form=form)

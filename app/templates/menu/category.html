@@ -9,7 +9,7 @@
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">{{ category.name }}</h5>
-              <a href="{{ url_for('menu.items_by_category', category_id=category.id) }}" class="btn btn-primary">Посмотреть товары</a>
+              <a href="{{ url_for('menu.items_by_category', category_name=category.name) }}" class="btn btn-primary">Посмотреть товары</a>
             </div>
           </div>
         </div>

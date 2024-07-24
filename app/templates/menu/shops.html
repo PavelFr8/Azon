@@ -10,7 +10,7 @@
             <img src="data:image/jpeg;base64,{{ shop.logo_data }}" class="card-img-top" alt="Shop Image" width="200" height="250">
             <div class="card-body">
               <h5 class="card-title">{{ shop.name }}</h5>
-              <a href="{{ url_for('shop.profile', id=shop.id) }}" class="btn btn-primary">Перейти в магазин</a>
+              <a href="{{ url_for('shop.profile', shop_name=shop.name) }}" class="btn btn-primary">Перейти в магазин</a>
             </div>
           </div>
         </div>

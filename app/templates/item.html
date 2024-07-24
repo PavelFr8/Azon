@@ -5,10 +5,10 @@
 </head>
 {% for item in items %}
 <a href="{{ url_for('item.profile', id=item.id) }}" style="color: black; text-decoration: none;">
-<div class="col-md-6 border rounded-3 iiii border-3">
+<div class="col-md-6 border rounded-3 iiii border-2">
     <div style="margin: auto;">
         {% if item.logo_data %}
-        <img src="data:image/jpeg;base64,{{ item.logo_data }}" alt="Фото товара" class="rounded-3 border border-3 border-primary" style="margin-right: 40px;">
+        <img src="data:image/jpeg;base64,{{ item.logo_data }}" alt="Фото товара" class="rounded-5 border-6" style="margin-right: 40px;">
         {% endif %}
         <div>
             <h2 class="okj">{{ item.price }} ₽</h2>

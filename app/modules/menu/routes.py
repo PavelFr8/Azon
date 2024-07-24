@@ -66,13 +66,13 @@ def search_item():
 
 
 # Отображение товаров по выбранной категории
-@module.route('/categories/items/<int:category_id>')
-def items_by_category(category_id):
-    category = Category.query.get(category_id)
+@module.route('/categories/<string:category_name>')
+def items_by_category(category_name):
+    category = Category.query.filter_by(name=category_name).first()
     if not category:
         abort(404)
 
-    items = Item.query.filter(Item.category_id.ilike(f'%{category_id}%')).all()
+    items = Item.query.filter(Item.category_id.ilike(f'%{category.id}%')).all()
     for item in items:
         item.logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
 

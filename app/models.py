@@ -1,9 +1,13 @@
-from app import db
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
+
 import sqlalchemy as sa
 import sqlalchemy.orm as orm
+
 import datetime
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import UserMixin
+import base64
+
+from app import db
 
 
 class User(db.Model, UserMixin):
@@ -11,9 +15,8 @@ class User(db.Model, UserMixin):
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     email = sa.Column(sa.String, unique=True, nullable=False, index=True)
     hashed_password = sa.Column(sa.String, nullable=False)
-    delivery_address = sa.Column(sa.String, nullable=True)  # тут пустота true но надо будеть сделать false
+    address = sa.Column(sa.String, nullable=False, default=None)
     created_date = sa.Column(sa.DateTime, default=datetime.datetime.now)
-    address = sa.Column(sa.String, nullable=True, default='Не выбран')
 
     shop = orm.relationship('Shop', back_populates='user')
     cart = orm.relationship('ShoppingCart', back_populates='user')
@@ -27,6 +30,16 @@ class User(db.Model, UserMixin):
     def update_password(self, new_password):
         self.set_password(new_password)
 
+    def get_items_in_cart(self):
+        items = []
+        shopping_carts = ShoppingCart.query.filter_by(user_id=self.id).all()
+        for cart in shopping_carts:
+            item: Item = Item.query.get(cart.item_id)
+            item.logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
+            item.amount = cart.amount
+            items.append(item)
+        return items
+
 
 class Item(db.Model):
     __tablename__ = 'items'
@@ -37,7 +50,7 @@ class Item(db.Model):
     img = sa.Column(sa.LargeBinary, nullable=False)
     category_id = sa.Column(sa.String, nullable=False)
     seller_id = sa.Column(sa.Integer, sa.ForeignKey("shops.id"))
-    comments = sa.Column(sa.String, nullable=True)
+    comments = sa.Column(sa.Text, nullable=True)
     rating = sa.Column(sa.String, nullable=True, default="0;0;0")
 
     shop = orm.relationship('Shop')
@@ -48,7 +61,7 @@ class Shop(db.Model):
     __tablename__ = 'shops'
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     name = sa.Column(sa.String, nullable=False, unique=True)
-    about = sa.Column(sa.String, nullable=True, default='Описание магазина')
+    about = sa.Column(sa.Text, nullable=True, default='Описание магазина')
     img = sa.Column(sa.LargeBinary, nullable=False)
     contact = sa.Column(sa.String, nullable=True)
     owner_id = sa.Column(sa.Integer, sa.ForeignKey("users.id"))
@@ -60,7 +73,7 @@ class Shop(db.Model):
 class Category(db.Model):
     __tablename__ = 'categories'
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
-    name = sa.Column(sa.String, nullable=False)
+    name = sa.Column(sa.String, nullable=False, unique=True)
 
 
 class ShoppingCart(db.Model):

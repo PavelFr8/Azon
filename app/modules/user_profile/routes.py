@@ -3,7 +3,7 @@ from flask_login import current_user, login_required
 
 import base64
 
-from app.models import Item, User
+from app.models import Item, User, ShoppingCart
 from app import db, logger
 from . import module
 from .forms import UserChangePasswordForm
@@ -13,15 +13,7 @@ from .forms import UserChangePasswordForm
 @module.route('/profile')
 @login_required
 def profile():
-    items_in_cart = []
-    items = []
-    if current_user.shopping_cart:
-        items_in_cart = [int(id) for id in current_user.shopping_cart.split(',') if id]
-    if items_in_cart:
-        items = Item.query.filter_by(Item.id.in_(items_in_cart)).all()
-    if items:
-        for item in items:
-            item.logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
+    items = current_user.get_items_in_cart()
     return render_template('user_profile/profile.html', user=current_user, title='Ваш профиль', items=items)
 
 

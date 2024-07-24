@@ -7,7 +7,8 @@
 }
 
   .hero-section {
-    background: linear-gradient(184deg, rgba(255,255,255,1) 24%, rgba(84,156,239,1) 26%, rgba(49,101,186,1) 53%);
+    background: linear-gradient(184deg, rgba(255,255,255,1) 24%, rgba(84,150,230,1) 26%, rgba(49,101,186,1) 53%);
+    opacity: 0.9;
     color: #fff;
     text-align: center;
   }
@@ -29,7 +30,13 @@
     width: 69%;
     margin: auto;
   }
+.text1-8 {
+    margin-bottom: 50px;
+    margin-top: 130px;
+    font-weight: 800;
+    text-align: center;
 
+}
   .text2 {
     font-size: 16px;
     color: #fff;
@@ -42,9 +49,10 @@
 
 
   .about-section {
-    padding: 50px 0;
+    padding: 25px 0;
     padding-bottom: 80vh;
-    background: linear-gradient(-6deg, rgba(255,255,255,1) 45%, rgba(84,156,239,1) 46%, rgba(49,101,186,1) 74%);
+    background: linear-gradient(-6deg, rgba(255,255,255,1) 45%, rgba(84,150,230,1) 46%, rgba(49,101,186,1) 74%);
+    opacity: 0.9;
     height: 50vh;
   }
 
@@ -113,6 +121,25 @@
     position: relative;
     left: -80px;
 }
+.d2{
+    text-align: center;
+    margin: auto;
+    display: flex;
+}
+.d1{
+    text-align: center;
+    margin: auto;
+    display: flex;
+    margin-bottom: 100px;
+    width: 50%;
+}
+.contener4{
+   max-width: 900px;
+    margin: auto;
+}
+.part5 {
+    position: relative;
+}
 .e5 {
     border-radius: 15px;
     border: 3px solid #326eb3;
@@ -144,6 +171,10 @@
     .f43 {
         width: 100%;
     }
+.container1234{
+    margin: auto;
+    widht: 95%;
+}
     .text1 {
         font-size: 24px;
         margin-top: 40px;
@@ -165,7 +196,7 @@
         margin-top: -525px;
     }
     .contener3 {
-        max-width: 90%;
+        max-width: 96%;
     }
     .e5 {
         width: 100%;
@@ -194,5 +225,12 @@
     display: block;
     width: 100%;
     margin-top: 20px;
+}
+.contener3 {
+    max-width: 96%;
+}
+.container1234{
+    margin: auto;
+    widht: 95%;
 }
 }

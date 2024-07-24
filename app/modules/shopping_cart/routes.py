@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 
 import base64
 
-from app.models import Item, User, ShoppingCart
+from app.models import ShoppingCart
 from app import db, logger
 from . import module
 
@@ -37,14 +37,9 @@ def add(id):
 @login_required
 def cart():
     total_price = 0
-    items = []
-    shopping_carts = ShoppingCart.query.filter_by(user_id=current_user.id).all()
-    for cart in shopping_carts:
-        item: Item = Item.query.get(cart.item_id)
+    items = current_user.get_items_in_cart()
+    for item in items:
         total_price += item.price
-        item.logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
-        item.amount = cart.amount
-        items.append(item)
     return render_template('shopping_cart/cart.html', title='Корзина', items=items, total_price=total_price)
 
 

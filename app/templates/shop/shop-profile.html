@@ -16,7 +16,7 @@
             <h2 class="card-title font-weight-bold">Контактная информация</h2>
             <p class="font-weight-normal fs-5">{{ shop.contact }}</p>
             {% if shop.owner_id == current_user.id %}
-            <a href="{{ url_for('shop.change_info', id=shop.id) }}" class="btn btn-primary" type="button">Изменить данные</a>
+            <a href="{{ url_for('shop.change_info', shop_name=shop.name) }}" class="btn btn-primary" type="button">Изменить данные</a>
             {% endif %}
         </div>
     </div>
@@ -24,7 +24,7 @@
 <div style="text-align: center; margin-top: 50px; margin-bottom: 50px;">
     <h2 class="card-title">Товары
         {% if shop.owner_id == current_user.id %}
-        <a href="{{ url_for('item.register', id=shop.id) }}" class="btn btn-primary" style="margin-left: 20px;">Добавить</a>
+        <a href="{{ url_for('item.register', shop_name=shop.name) }}" class="btn btn-primary" style="margin-left: 20px;">Добавить</a>
         {% endif %}
     </h2>
 </div>

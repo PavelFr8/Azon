@@ -1,20 +1,22 @@
 {% extends "base.html" %}
 {% block content %}
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
 </head>
 
-
+<body class="qwerty">
   <div class="container1234">
+   <div class="container431">
     <!-- Блок с приветствием -->
     <div class="row hero-section">
       <div class="">
-        <h1 class="text1 e">Azon: Ваш надежный онлайн-магазин</h1>
-        <p class="text2 f43">Добро пожаловать в Azon, ваш первоклассный онлайн-магазин, где мы стремимся предоставить вам непревзойденный
-            опыт покупок. Мы считаем, что каждый заслуживает возможности наслаждаться широким выбором качественных
+        <h1 class="text1 e">Azon — ваш надежный онлайн-магазин</h1>
+        <p class="text2 f43">Мы стремимся предоставить вам непревзойденный опыт покупок и считаем, что каждый
+            заслуживает возможности наслаждаться широким выбором качественных
             товаров по конкурентоспособным ценам.</p>
-        <a href="/" class="btn btn-primary ssss btn-lg">Начать покупки</a>
       </div>
+            <hr style="height: 5px; color: white; width: 80%; margin: auto; margin-top: 50px;">
     </div>
 
     <!-- Блок с информацией о компании -->
@@ -32,6 +34,7 @@
         </div>
       </div>
     </div>
+   </div>
 
     <!-- Блок с информацией о компании Azon -->
     <div class="part5">
@@ -57,7 +60,15 @@
       </div>
       </div>
   </div>
-
+<div class="part5" style="margin-top: 200px;">
+    <div class="contener4">
+    <div class="text5">
+        <h1 class="text1-8 text555">Самое время приступить к покупкам!</h1>
+        <a href="{{ url_for('shop.register') }}" class="btn btn-primary d1"><p class="fs-4 d2">Начать покупки</p></a>
+    </div>
+    </div>
 </div>
 
+</div>
+</body>
 {% endblock %}

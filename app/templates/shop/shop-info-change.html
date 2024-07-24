@@ -37,13 +37,15 @@
         {% endfor %}
     </div>
     <div class="form-group">
-        <label for="floatingPasswordAgain" class="fs-4">Новый логотип магазина</label>
-        {{ form.img(class="form-control-file", id="floatingPasswordAgain") }}
-
+        <label for="floatingPasswordAgain" class="fs-4">Логотип магазина</label>
+        {% if shop.img %}
+            <img src="data:image/png;base64,{{ logo_data }}" alt="Current Image" style="width: 0px; margin-bottom: 10px;">
+        {% endif %}
+        {{ form.img(type="file", class="form-control", id="img", placeholder="Фото") }}
         {% for error in form.img.errors %}
-            <div class="alert alert-danger" role="alert">
-                {{ error }}
-            </div>
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
         {% endfor %}
     </div>
     <p>{{ form.submit(class="btn btn-primary w-100 py-2 fs-5 fw-bold", type="submit") }}</p>

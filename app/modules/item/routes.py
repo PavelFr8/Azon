@@ -1,5 +1,5 @@
 from flask import request, render_template, abort, redirect, url_for, flash
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 import base64
 
@@ -11,9 +11,9 @@ from .forms import ItemForm, CommentForm
 
 
 # Регистрация нового товара
-@module.route('/register/<int:id>', methods=['POST', 'GET'])
+@module.route('/register/<string:shop_name>', methods=['POST', 'GET'])
 @login_required
-def register(id):
+def register(shop_name):
     form = ItemForm()
     if form.validate_on_submit():
         img_file = request.files['img']
@@ -26,14 +26,14 @@ def register(id):
                     ctgr = Category.query.filter_by(name=category).first()
                     if ctgr and ctgr.id not in category_ids:
                         category_ids.append(ctgr.id)
-
+                shop = Shop.query.filter_by(name=shop_name, owner_id=current_user.id).first()
                 item = Item(
                     name=form.name.data,
                     price=form.price.data,
                     about=form.about.data,
                     img=img_binary,
                     category_id=','.join(map(str, category_ids)),
-                    seller_id=id
+                    seller_id=shop.id
                 )
                 db.session.add(item)
                 db.session.commit()
