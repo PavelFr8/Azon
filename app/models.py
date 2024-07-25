@@ -15,7 +15,7 @@ class User(db.Model, UserMixin):
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     email = sa.Column(sa.String, unique=True, nullable=False, index=True)
     hashed_password = sa.Column(sa.String, nullable=False)
-    address = sa.Column(sa.String, nullable=False, default=None)
+    address = sa.Column(sa.String, nullable=False, default="Не указано")
     created_date = sa.Column(sa.DateTime, default=datetime.datetime.now)
 
     shop = orm.relationship('Shop', back_populates='user')
@@ -44,6 +44,7 @@ class User(db.Model, UserMixin):
 class Item(db.Model):
     __tablename__ = 'items'
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
+    article = sa.Column(sa.BigInteger, nullable=False, unique=True)
     name = sa.Column(sa.String, nullable=False)
     price = sa.Column(sa.Integer, nullable=False)
     about = sa.Column(sa.String, nullable=False)

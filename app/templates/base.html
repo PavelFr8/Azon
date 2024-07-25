@@ -51,9 +51,7 @@
           <li><a href="{{ url_for('menu.about') }}" class="nav-link px-2 link-body-emphasis">О нас</a></li>
           <li><a href="{{ url_for('menu.shops') }}" class="nav-link px-2 link-body-emphasis">Продавцы</a></li>
           <li><a href="{{ url_for('menu.categories') }}" class="nav-link px-2 link-body-emphasis">Категории</a></li>
-          {% if current_user.is_authenticated %}
           <li><a href="{{ url_for('menu.info') }}" class="px-2 btn btn-primary">Стать продавцом</a></li>
-          {% endif %}
         </ul>
 
         <form action="{{ url_for('menu.search_item') }}" method="GET" class="col-1 col-lg-auto mb-3 mb-lg-0 me-lg-3 v234">

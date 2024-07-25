@@ -24,7 +24,6 @@ def index():
 
 # Страница "Стать продавцом"
 @module.route('/info')
-@login_required
 def info():
     return render_template('menu/info.html', title='Программа продавцов')
 

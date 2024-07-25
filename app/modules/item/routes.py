@@ -2,6 +2,7 @@ from flask import request, render_template, abort, redirect, url_for, flash
 from flask_login import login_required, current_user
 
 import base64
+import uuid
 
 from app.models import Item, Shop, Category, User
 from app import db, logger
@@ -29,6 +30,7 @@ def register(shop_name):
                 shop = Shop.query.filter_by(name=shop_name, owner_id=current_user.id).first()
                 item = Item(
                     name=form.name.data,
+                    article=int(str(int(uuid.uuid4()))[:13]),
                     price=form.price.data,
                     about=form.about.data,
                     img=img_binary,
