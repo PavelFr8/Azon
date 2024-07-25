@@ -2,8 +2,11 @@ from flask_login import current_user
 
 from app.models import Shop, Category
 
-# shops и categories теперь типо глобальная переменная для жижи
 def inject():
+    """
+    shops и categories теперь типо глобальная переменная для жижи
+    :return: dict
+    """
     if current_user.is_authenticated:
         shops = Shop.query.filter_by(owner_id=current_user.id).all()
         categories = Category.query.all()

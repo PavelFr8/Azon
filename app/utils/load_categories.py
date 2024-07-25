@@ -9,6 +9,9 @@ categories = [
 ]
 
 def load_categories():
+    """
+    Load categories to database
+    """
     try:
         db.session.execute(text("DELETE FROM categories;"))
         for name in categories:

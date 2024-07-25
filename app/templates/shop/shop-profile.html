@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/shop-prof.css') }}">
 </head>
 <main class="form-signin w-100 m-auto">
-    <h1 class="h3 mb-3 font-weight-bolder fs-1" style="margin: 20px auto; text-align: center;"><img src="data:image/jpeg;base64,{{ logo_data }}" alt="Логотип магазина" width="135" height="135" class="rounded-3 border border-3 border-primary" style="margin-right: 40px;">{{ shop.name }}</h1>
+    <h1 class="h3 mb-3 font-weight-bolder fs-1" style="margin: 20px auto; text-align: center;"><img src="data:image/jpeg;base64,{{ logo_data }}" alt="Логотип магазина" width="230" height="230" class="rounded-3 border-3" style="margin-right: 40px;">{{ shop.name }}</h1>
     <div class="card" style="display: flex; width: 70%; margin: auto;">
         <div class="card-body">
             <h1>Информация</h1>
@@ -33,7 +33,7 @@
     <div style="margin: auto;">
         <a href="{{ url_for('item.profile', article=item.article) }}" style="color: black; text-decoration: none;">
         {% if item.logo_data %}
-            <img src="data:image/jpeg;base64,{{ item.logo_data }}" alt="Фото товара" class="rounded-3 border border-3 border-primary" style="margin-right: 40px;">
+            <img src="data:image/jpeg;base64,{{ item.logo_data }}" alt="Фото товара" class="rounded-3 border-3" style="margin-right: 40px;">
         {% endif %}
         <div>
             <h2 class="okj">{{ item.price }} ₽</h2>

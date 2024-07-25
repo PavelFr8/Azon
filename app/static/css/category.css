@@ -1,0 +1,16 @@
+@media(max-width: 768px){
+.cat-img {
+    width: 22.6vh;
+}
+}
+
+
+@media(max-width: 450px){
+.cat-img {
+    width: 21vh;
+}
+.cat-text{
+    font-size: 17px;
+}
+}
+

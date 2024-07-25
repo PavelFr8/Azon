@@ -44,13 +44,7 @@ def login():
             user = User.query.filter_by(email=form.email.data).first()
             if user and user.check_password(form.password.data):
                 login_user(user, remember=form.remember_me.data)
-
                 response = make_response(redirect(url_for('menu.index')))
-                if form.remember_me.data:
-                    response.set_cookie('username', user.email, max_age=60*60*24*365, httponly=True, secure=True,
-                                        samesite='Lax')
-                else:
-                    response.set_cookie('username', '', expires=0)
                 flash('Вы успешно вошли!', 'success')
                 return response
 

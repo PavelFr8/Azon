@@ -1,19 +1,28 @@
 {% extends "base.html" %}
 
 {% block content %}
+<head>
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/category.css') }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
   <div class="container">
-    <h1 class="mt-5">Категории товаров</h1>
+    <h1 class="mt-5" style="margin-bottom: 50px;">Категории товаров</h1>
     <div class="row">
       {% for category in categories %}
-        <div class="col-md-4 mb-4">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">{{ category.name }}</h5>
-              <a href="{{ url_for('menu.items_by_category', category_name=category.name) }}" class="btn btn-primary">Посмотреть товары</a>
+        <div class="col-md-4 mb-4 cat-img">
+          <div class="card" style="border: None;">
+            <a href="{{ url_for('menu.items_by_category', category_name=category.name) }}" style="color: black; text-decoration: none;">
+            <div class="card-body" style="margin: auto; text-align: center;">
+              <img src="{{ url_for('static', filename='img/categories/' + category.name + '.png') }}" alt="Фото категории">
+              <h5 class="card-title cat-text" style="margin-top: 10px;">{{ category.name }}</h5>
             </div>
+            </a>
           </div>
         </div>
       {% endfor %}
     </div>
   </div>
+</body>
 {% endblock %}

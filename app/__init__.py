@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, flash
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -13,6 +13,7 @@ import logging
 db = SQLAlchemy()  # create database
 login_manager = LoginManager()  # create manager for login
 logging.basicConfig(level=logging.DEBUG)
+login_manager.session_protection = "strong"
 logger = logging.getLogger(__name__)  # create logger
 
 

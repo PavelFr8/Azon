@@ -50,7 +50,7 @@
         <ul class="nav col-12 col-lg-auto me-lg-auto mb-1 justify-content-center mb-md-0 fs-6 fw-bold">
           <li><a href="{{ url_for('menu.about') }}" class="nav-link px-2 link-body-emphasis">О нас</a></li>
           <li><a href="{{ url_for('menu.shops') }}" class="nav-link px-2 link-body-emphasis">Продавцы</a></li>
-          <li><a href="{{ url_for('menu.categories') }}" class="nav-link px-2 link-body-emphasis">Категории</a></li>
+          <li><a href="{{ url_for('menu.categories') }}" class="nav-link px-2 link-body-emphasis" style="margin-right: 8px;">Категории</a></li>
           <li><a href="{{ url_for('menu.info') }}" class="px-2 btn btn-primary">Стать продавцом</a></li>
         </ul>
 
@@ -71,7 +71,7 @@
           <ul class="dropdown-menu text-small">
             <li><a class="dropdown-item" href="{{ url_for('user_profile.profile') }}">Профиль</a></li>
             {% for shop in shops %}
-            <li><a class="dropdown-item" href="{{ url_for('shop.profile', shop_name=shop.name) }}">{{ shop.name }}</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('shop.profile', shop_name=shop.name) }}"><img src="{{ url_for('static', filename='img/shop/shop.svg') }}" width="24px" height="20px">  {{ shop.name }}</a></li>
             {% endfor %}
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="{{ url_for('registration.logout') }}">Выйти</a></li>

@@ -30,12 +30,4 @@ app.context_processor(inject)
 @login_manager.user_loader
 def load_user(user_id):
     user = User.query.get(user_id)
-    if user:
-        return user
-    # Проверяем куки
-    username = request.cookies.get('username')
-    if username:
-        user = User.query.filter_by(email=username).first()
-        if user:
-            login_user(user)
-            return user
+    return user
