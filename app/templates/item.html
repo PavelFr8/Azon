@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/item.css') }}">
 </head>
 {% for item in items %}
-<a href="{{ url_for('item.profile', id=item.id) }}" style="color: black; text-decoration: none;">
+<a href="{{ url_for('item.profile', article=item.article) }}" style="color: black; text-decoration: none;">
 <div class="col-md-6 border rounded-3 iiii border-2">
     <div style="margin: auto;">
         {% if item.logo_data %}

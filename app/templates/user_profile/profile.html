@@ -21,7 +21,7 @@
         <div class="card-body">
             <h2 class="card-title">Корзина <a class="btn btn-primary" style="margin-left: 20px;" href="{{ url_for('shopping_cart.cart') }}">В корзину</a></h2>
             {% for item in items %}
-            <a href="{{ url_for('item.profile', id=item.id) }}" style="color: black;">
+            <a href="{{ url_for('item.profile', article=item.article) }}" style="color: black;">
             <div class="col-md-6 border rounded-3 iiii border-3" style="width: 24%;">
                 <div style="margin: auto;">
                     {% if item.logo_data %}

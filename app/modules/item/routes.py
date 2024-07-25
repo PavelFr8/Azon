@@ -40,7 +40,7 @@ def register(shop_name):
                 db.session.add(item)
                 db.session.commit()
                 flash('Товар успешно зарегистрирован!', 'success')
-                return redirect('/')
+                return redirect(url_for('menu.index'))
             except Exception as e:
                 logger.error(f"Error registering item: {e}")
                 db.session.rollback()
@@ -54,11 +54,11 @@ def register(shop_name):
 
 
 # Профиль товара
-@module.route('/profile/<int:id>')
-def profile(id):
+@module.route('/profile/<int:article>')
+def profile(article):
     form = CommentForm()
     try:
-        item = Item.query.get(id)
+        item = Item.query.filter(Item.article == article).first()
         if not item:
             abort(404)
 
@@ -75,14 +75,15 @@ def profile(id):
         flash("Произошла ошибка при загрузке профиля товара.", 'danger')
         return redirect(url_for('menu.index'))
 
+
 # Обработчик для отправки отзывов
-@module.route('/add_comment/<int:id>', methods=['POST'])
+@module.route('/add_comment/<int:article>', methods=['POST'])
 @login_required
-def add_comment(id):
+def add_comment(article):
     form = CommentForm(request.form)
     if form.validate_on_submit() and 'rate' in request.form:
         try:
-            item: Item = db.session.get(Item, id)
+            item: Item = Item.query.filter(Item.article == article)
             if not item:
                 abort(404)
 
@@ -110,14 +111,14 @@ def add_comment(id):
             db.session.rollback()
             flash("Произошла ошибка при добавлении отзыва.", 'danger')
 
-    return redirect(url_for('item.profile', id=id))
+    return redirect(url_for('item.profile', article=article))
 
 # Удаление товара
-@module.route('/delete/<int:id>', methods=['GET', 'POST'])
+@module.route('/delete/<int:article>', methods=['GET', 'POST'])
 @login_required
-def delete(id):
+def delete(article):
     try:
-        item: Item = Item.query.get(id)
+        item: Item = Item.query.filter(Item.article == article)
         if not item:
             abort(404)
 
@@ -129,7 +130,7 @@ def delete(id):
         db.session.delete(item)
         db.session.commit()
         flash("Товар успешно удален!", 'success')
-        return redirect(url_for('shop.profile', id=item.seller_id if item else 0))
+        return redirect(url_for('shop.profile', shop_name=item.shop.name))
     except Exception as e:
         logger.error(f"Error deleting item: {e}")
         db.session.rollback()
@@ -137,12 +138,12 @@ def delete(id):
 
 
 # Изменение данных о товаре
-@module.route('/change/<int:id>', methods=['GET', 'POST'])
+@module.route('/change/<int:article>', methods=['GET', 'POST'])
 @login_required
-def change(id):
+def change(article):
     form = ItemForm()
     try:
-        item = Item.query.filter_by(id=id).first()
+        item = Item.query.filter_by(article=article).first()
         if not item:
             abort(404)
 
@@ -185,8 +186,9 @@ def change(id):
             item.price = form.price.data
             item.category_id = ','.join(map(str, category_ids))
             db.session.commit()
+
             flash("Данные о товаре успешно обновлены!", 'success')
-            return redirect(url_for('item.profile', id=id))
+            return redirect(url_for('item.profile', article=article))
         return render_template('item/item-register.html', title='Изменение данных', form=form, item=item)
 
     except Exception as e:

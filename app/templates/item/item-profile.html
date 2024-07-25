@@ -16,7 +16,7 @@
             <div class="card-body">
                 <h2>Отзывы</h2>
                 {% if current_user.is_authenticated %}
-                <form action="{{ url_for('item.add_comment', id=item.id) }}" method="post">
+                <form action="{{ url_for('item.add_comment', article=item.article) }}" method="post">
                     {{ form.csrf_token }}
                     <div class="container">
                         <div class="star-widget">
@@ -84,7 +84,7 @@
                         <h2 class="rating-value">Рейтинг: {{ item.rating.split(';')[2] }}</h2>
                     </div>
                     {% if current_user.is_authenticated %}
-                    <a href="{{ url_for('shopping_cart.add', id=item.id) }}" class="btn btn-primary r">Добавить в корзину<img src="{{ url_for('static', filename='img/header/shopping_cart.svg') }}" alt="mdo" width="32" height="32" class="o"></a>
+                    <a href="{{ url_for('shopping_cart.add', article=item.article) }}" class="btn btn-primary r">Добавить в корзину<img src="{{ url_for('static', filename='img/header/shopping_cart.svg') }}" alt="mdo" width="32" height="32" class="o"></a>
                     {% else %}
                     <a href="{{ url_for('registration.login') }}" class="btn btn-primary r">Добавить в корзину<img src="{{ url_for('static', filename='img/header/shopping_cart.svg') }}" alt="mdo" width="32" height="32" class="o"></a>
                     {% endif %}
