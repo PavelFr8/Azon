@@ -1,5 +1,5 @@
 .iiii {
-    width: calc((100% - 60px * 3) / 5);
+    width: 224px;
     height: 292px;
     display: inline-block;
     margin: 30px 15px;
@@ -19,7 +19,7 @@
     margin-left: 10px;
 }
 .iiii img {
-    width: 100%;
+    width: 220px;
     height: 220px;
 }
 
@@ -36,26 +36,29 @@
         margin-right: 40px;
     }
     .iiii {
-        width: calc((100% - 30px * 3) / 2);
+        width: calc((89% - 30px * 3) / 2);
         height: 340px;
+        margin: 30px;
     }
     .iiii img {
         height: 260px;
+        width: 260px;
     }
 }
 
 @media only screen and (max-width: 560px) {
     /* Медиа-запрос для телефонов */
     .v234 {
-        display: block;
         width: 100%;
         margin-top: 20px;
     }
     .iiii {
-        width: calc((100% - 25px * 3) / 2);
-        height: 220px;
+        width: calc((100% - 15px * 3) / 2);
+        height: 230px;
+        margin: 10px;
     }
     .iiii img {
-        height: 150px;
+        height: 40.5vw;
+        width: 100%;
     }
 }

@@ -1,0 +1,49 @@
+.img-2 {
+    width: 200px;
+    height: 200px;
+}
+
+.shop-details {
+    padding-left: 20px;
+}
+
+.card-body {
+    padding: 0px;
+    width
+}
+
+.shop-text {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+@media (min-width: 768px) {
+    .col-md-4 {
+        flex: 0 0 auto;
+        width: 50%;
+    }
+    .img-2 {
+        width: 180px;
+        height: 180px;
+    }
+}
+@media (min-width: 1025px) {
+    .col-md-4 {
+        flex: 0 0 auto;
+        width: 33%;
+    }
+}
+
+@media(max-width: 450px) {
+    .shop-img {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+    .img-2 {
+        width: 160px;
+        height: 160px;
+    }
+    .shop-text {
+        font-size: 17px;
+    }
+}

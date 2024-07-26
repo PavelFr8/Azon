@@ -1,20 +1,33 @@
 {% extends "base.html" %}
 
 {% block content %}
+<head>
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/shop.css') }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
   <div class="container">
-    <h1 class="mt-5">Продавцы</h1>
+    <h1 class="mt-5" style="margin-bottom: 50px;">Продавцы</h1>
     <div class="row">
       {% for shop in shops %}
-        <div class="col-md-4 mb-4">
+        <div class="col-md-4 mb-4 shop-img">
           <div class="card">
-            <img src="data:image/jpeg;base64,{{ shop.logo_data }}" class="card-img-top" alt="Shop Image" width="200" height="250">
-            <div class="card-body">
-              <h5 class="card-title">{{ shop.name }}</h5>
-              <a href="{{ url_for('shop.profile', shop_name=shop.name) }}" class="btn btn-primary">Перейти в магазин</a>
-            </div>
+            <a href="{{ url_for('shop.profile', shop_name=shop.name) }}" style="color: black; text-decoration: none;">
+              <div class="card-body d-flex">
+                <div class="shop-image-container">
+                  <img src="data:image/jpeg;base64,{{ shop.logo_data }}" alt="Shop Image" class="img-2 rounded-3 border-3">
+                </div>
+                <div class="shop-details">
+                  <h5 class="card-title shop-text">{{ shop.name }}</h5>
+                  <p>{{ shop.about }}</p>
+                </div>
+              </div>
+            </a>
           </div>
         </div>
       {% endfor %}
     </div>
   </div>
+</body>
 {% endblock %}
