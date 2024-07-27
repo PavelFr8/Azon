@@ -5,11 +5,17 @@
 
 .shop-details {
     padding-left: 20px;
+    height: 180px;
+}
+
+.about-shop {
+    hyphens: auto;
+    overflow: hidden;
 }
 
 .card-body {
     padding: 0px;
-    width
+    word-wrap: normal;
 }
 
 .shop-text {

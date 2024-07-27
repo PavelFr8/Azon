@@ -32,7 +32,7 @@
             </div>
         {% endfor %}
     </div>
-    <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
+    <p style="margin: 10px;">{{ form.remember_me() }} {{ form.remember_me.label }}</p>
     <p>{{ form.submit(class="btn btn-primary w-100 py-2 fs-5 fw-bold", type="submit") }}</p>
     <p>Ещё нет аккаунта? <a href="{{ url_for('registration.register') }}" class="fw-bold" style="text-decoration: none;">Зарегистрироваться</a></p>
     <div>{{ message }}</div>

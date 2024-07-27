@@ -9,8 +9,6 @@ def inject():
     """
     if current_user.is_authenticated:
         shops = Shop.query.filter_by(owner_id=current_user.id).all()
-        categories = Category.query.all()
     else:
         shops = []
-        categories = []
-    return dict(shops=shops, categories=categories)
+    return dict(shops=shops)

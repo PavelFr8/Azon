@@ -32,6 +32,11 @@ def create_app():
         except Exception as e:
             app.logger.error(f"Failed to initialize DebugToolbarExtension: {e}")
 
+
+    # register api
+    import app.api as api
+    app.register_blueprint(api.module)
+
     # register errors handler
     import app.errors as errors
     app.register_blueprint(errors.module)
