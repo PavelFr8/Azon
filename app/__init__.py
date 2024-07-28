@@ -1,9 +1,10 @@
 import os
 
-from flask import Flask, flash
+from flask import Flask
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_wtf import CSRFProtect
 
 from dotenv import load_dotenv
 
@@ -20,6 +21,7 @@ logger = logging.getLogger(__name__)  # create logger
 def create_app():
     # create Flask app
     app = Flask(__name__)
+    csrf = CSRFProtect(app)
 
     # get from .env app settings
     load_dotenv()
@@ -32,10 +34,9 @@ def create_app():
         except Exception as e:
             app.logger.error(f"Failed to initialize DebugToolbarExtension: {e}")
 
-
-    # register api
-    import app.api as api
-    app.register_blueprint(api.module)
+    # register azon api
+    import app.api.azon_api as azon_api
+    app.register_blueprint(azon_api.module)
 
     # register errors handler
     import app.errors as errors

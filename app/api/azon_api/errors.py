@@ -1,7 +1,7 @@
 from werkzeug.http import HTTP_STATUS_CODES
 from werkzeug.exceptions import HTTPException
 
-from . import module
+from app.api.azon_api import module
 
 
 def error_response(status_code, message=None):

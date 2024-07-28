@@ -9,7 +9,7 @@ from . import module
 
 
 # Добавление товара в корзину
-@module.route('/add/<int:article>')
+@module.route('/add/<int:article>', methods=['POST'])
 @login_required
 def add(article):
     try:
@@ -26,7 +26,6 @@ def add(article):
             )
         db.session.add(shopping_cart)
         db.session.commit()
-        return redirect(url_for("item.profile", article=article))
     except Exception as e:
         logger.error(f"Error add item to shopping cart: {e}")
         db.session.rollback()

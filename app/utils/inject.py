@@ -4,7 +4,7 @@ from app.models import Shop, Category
 
 def inject():
     """
-    shops и categories теперь типо глобальная переменная для жижи
+    shops теперь типо глобальная переменная для жижи
     :return: dict
     """
     if current_user.is_authenticated:
