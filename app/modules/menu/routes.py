@@ -1,5 +1,5 @@
 from flask import request, render_template, abort
-from flask_login import current_user, login_user, login_required
+from flask_login import current_user, login_user
 
 import base64
 
@@ -19,7 +19,8 @@ def index():
     items = Item.query.all()
     for item in items:
         item.logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
-    return render_template("item.html", title='Azon', items=items)
+    categories = Category.query.all()[1:]
+    return render_template("item.html", title='Azon', items=items, categories=categories)
 
 
 # Страница "Стать продавцом"
@@ -38,7 +39,7 @@ def about():
 @module.route('/categories')
 def categories():
     categories = Category.query.all()[1:]
-    return render_template('menu/category.html', title='Категории', categories=categories)
+    return render_template('menu/category.html', title='Категории', categors=categories)
 
 
 # Страница "Продавцы"
@@ -60,8 +61,11 @@ def search_item():
         items = Item.query.all()  # Ищем все товары
     for item in items:
         item.logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
-
-    return render_template("item.html", title='Результаты поиска', items=items, text=query)
+    if query == '':
+        categories = Category.query.all()[1:]
+        return render_template("item.html", title='Результаты поиска', items=items, text=query, categories=categories)
+    else:
+        return render_template("item.html", title='Результаты поиска', items=items, text=query)
 
 
 # Отображение товаров по выбранной категории

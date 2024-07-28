@@ -10,7 +10,7 @@
   <div class="container">
     <h1 class="mt-5" style="margin-bottom: 50px;">Категории товаров</h1>
     <div class="row">
-      {% for category in categories %}
+      {% for category in categors%}
         <div class="col-md-4 mb-4 cat-img">
           <div class="card" style="border: None;">
             <a href="{{ url_for('menu.items_by_category', category_name=category.name) }}" style="color: black; text-decoration: none;">
