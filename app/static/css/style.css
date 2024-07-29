@@ -1,24 +1,107 @@
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
 * {
     font-family: "Ubuntu", sans-serif;
 }
 
-@media(max-width: 768px){
-.v234 {
+.flashes {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+}
+
+.alert {
+    margin-bottom: 10px;
+    opacity: 0.9;
+}
+
+.alert .close {
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: #000;
+    opacity: 0.5;
+}
+.alert-dismissible {
+    padding-right: 16px;
+}
+
+.alert .close:hover {
+    color: #000;
+    opacity: 0.75;
+}
+
+.alert .close:focus {
+    box-shadow: none;
+    outline: none;
+}
+
+.category-slider .item {
+    display: inline-block;
+    width: 200px;
+    margin-right: 10px;
+    text-align: center;
+}
+
+.card-product img {
     display: block;
-    width: 100%;
-    margin-top: 20px;
+    margin: 0 auto;
 }
-.ttt {
-    height: 150%;
-    margin-right: 40px;
+
+.slick-prev, .slick-next {
+    font-size: 2rem;
+    color: #555;
+    z-index: 1;
+    position: absolute;
+    top: 30%;
+    transform: translateY(-50%);
+    border: none;
 }
+
+.slick-prev:hover, .slick-next:hover {
+    color: #555;
 }
-@media(max-width: 991px)
-{
-.v234 {
-    display: block;
-    width: 100%;
-    margin-top: 20px;
+
+.slick-prev {
+    left: -35px;
 }
+
+.slick-next {
+    right: -35px;
+}
+
+/* Media Queries */
+@media (max-width: 991px) {
+    .v234 {
+        display: block;
+        width: 100%;
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .v234 {
+        display: block;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .ttt {
+        height: 150%;
+        margin-right: 40px;
+    }
+
+    .slick-prev, .slick-next {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .slick-prev, .slick-next {
+        display: none;
+    }
 }

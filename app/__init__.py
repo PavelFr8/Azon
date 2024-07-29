@@ -14,7 +14,7 @@ import logging
 db = SQLAlchemy()  # create database
 login_manager = LoginManager()  # create manager for login
 logging.basicConfig(level=logging.DEBUG)
-login_manager.session_protection = "strong"
+# login_manager.session_protection = "strong"
 logger = logging.getLogger(__name__)  # create logger
 
 

@@ -4,6 +4,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/item-prof.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="{{ url_for('static', filename='js/item_profile.js') }}" defer></script>
 </head>
 <div class="container mt-4">
     <div class="categories">
@@ -66,31 +67,31 @@
         </div>
     </div>
     <div class="col-lg-3 col-md-12 mb-4 boom">
-            <div class="card mt-3 opa">
-                <div class="card-body">
-                    <h2>Отзывы</h2>
-                    {% if current_user.is_authenticated %}
-                    <form action="{{ url_for('item.add_comment', article=item.article) }}" method="post">
-                        {{ form.hidden_tag() }}
-                        <div class="star-widget mb-3">
-                            {% for i in range(5, 0, -1) %}
-                            <input type="radio" name="rate" id="rate-{{ i }}" value="{{ i }}">
-                            <label for="rate-{{ i }}" class="fas fa-star"></label>
-                            {% endfor %}
-                        </div>
-                        <div class="form-floating mb-3">
-                            {{ form.text(class="form-control", id="floatingInput", placeholder="Отзыв") }}
-                            <label for="floatingInput">Отзыв</label>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100 py-2 fs-5 fw-bold">Опубликовать отзыв</button>
-                        {% for error in form.text.errors %}
-                        <div class="alert alert-danger mt-2" role="alert">
-                            {{ error }}
-                        </div>
+        <div class="card mt-3 opa">
+            <div class="card-body">
+                <h2>Отзывы</h2>
+                {% if current_user.is_authenticated %}
+                <form action="{{ url_for('item.add_comment', article=item.article) }}" method="post">
+                    {{ form.hidden_tag() }}
+                    <div class="star-widget mb-3">
+                        {% for i in range(5, 0, -1) %}
+                        <input type="radio" name="rate" id="rate-{{ i }}" value="{{ i }}">
+                        <label for="rate-{{ i }}" class="fas fa-star"></label>
                         {% endfor %}
-                    </form>
-                    {% endif %}
-                </div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        {{ form.text(class="form-control", id="floatingInput", placeholder="Отзыв") }}
+                        <label for="floatingInput">Отзыв</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 py-2 fs-5 fw-bold">Опубликовать отзыв</button>
+                    {% for error in form.text.errors %}
+                    <div class="alert alert-danger mt-2" role="alert">
+                        {{ error }}
+                    </div>
+                    {% endfor %}
+                </form>
+                {% endif %}
+            </div>
             <!-- Display Comments -->
             {% if comments %}
             <div class="comments-section">
@@ -111,33 +112,9 @@
                 {% endfor %}
             </div>
             {% endif %}
-            </div>
+        </div>
     </div>
+    <!-- Hidden input field to store the CSRF token -->
+    <input type="hidden" id="csrf_token" value="{{ csrf_token() }}">
 </div>
-<script>
-function addToCart(url) {
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': '{{ csrf_token() }}'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            console.log('Успешно добавлено в корзину:', data);
-            var button = document.getElementById('addToCartButton');
-            button.classList.remove('btn-primary');
-            button.classList.add('btn-success');
-            button.textContent = 'Добавлено в корзину';
-        } else {
-            console.error('Ошибка при добавлении в корзину:', data);
-        }
-    })
-    .catch(error => {
-        console.error('Ошибка при выполнении POST-запроса:', error);
-    });
-}
-</script>
 {% endblock %}
