@@ -1,0 +1,37 @@
+@media (min-width: 991px) {
+    body {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .shape {
+        position: absolute;
+        background-color: var(--bs-primary);
+        opacity: 0.1;
+    }
+
+    .circle {
+        border-radius: 50%;
+    }
+
+    .shape1 {
+        width: 200px;
+        height: 200px;
+        top: 53vh;
+        left: 3vw;
+    }
+
+    .shape2 {
+        width: 300px;
+        height: 300px;
+        top: 43vh;
+        left: 75vw;
+    }
+
+    .shape3 {
+        width: 150px;
+        height: 150px;
+        top: 70vh;
+        left: 39%;
+    }
+}

@@ -1,42 +1,28 @@
 {% extends "base.html" %}
-
 {% block content %}
 <head>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/item.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user-profile.css') }}">
 </head>
 <main class="form-signin w-100 m-auto">
-    <h1 class="h3 mb-3 font-weight-bolder fs-1"  style="display: flex; width: 70%; margin: auto;">Ваш профиль</h1>
-    <div class="card" style="display: flex; width: 70%; margin: auto;">
+    <h1 class="h3 mb-3 font-weight-bolder fs-1 text-center">Ваш профиль</h1>
+    <div class="card mx-auto" style="width: 70%; border: None;">
         <div class="card-body">
             <h2 class="card-title font-weight-bold">Электронная почта</h2>
             <p class="font-weight-normal fs-5">{{ user.email }}</p>
             <br>
             <h2 class="card-title font-weight-bold">Пароль</h2>
-            <p class="font-weight-normal fs-5">•••••••••••••••••••••••</p>
-            <a href="{{ url_for('user_profile.change_password', id=current_user.id) }}" class="btn btn-primary" type="button">Изменить пароль</a>
+            <p class="font-weight-normal fs-5" style="margin: 5px;">•••••••••••••••••••••••</p>
+            <a href="{{ url_for('user_profile.change_password', id=current_user.id) }}" class="btn btn-secondary">Изменить пароль</a>
+            <br>
+            <h2 class="card-title font-weight-bold" style="margin-top: 18px; margin-bottom: 5px;">Адрес</h2>
+            <p class="font-weight-normal fs-5" style="margin: 5px;">{{ user.address }}</p>
+            <a href="#" class="btn btn-secondary">Изменить адрес</a>
         </div>
     </div>
 </main>
-    <div class="card" style="display: flex; width: 78%; margin: 50px auto;">
-        <div class="card-body">
-            <h2 class="card-title">Корзина <a class="btn btn-primary" style="margin-left: 20px;" href="{{ url_for('shopping_cart.cart') }}">В корзину</a></h2>
-            {% for item in items %}
-            <a href="{{ url_for('item.profile', article=item.article) }}" style="color: black;">
-            <div class="col-md-6 border rounded-3 iiii border-3" style="width: 24%;">
-                <div style="margin: auto;">
-                    {% if item.logo_data %}
-                    <img src="data:image/jpeg;base64,{{ item.logo_data }}" alt="Фото товара" class="rounded-3 border border-3 border-primary" style="margin-right: 40px;">
-                    {% endif %}
-                    <div>
-                        <h2 class="okj">{{ item.price }} ₽</h2>
-                    </div>
-                    <div>
-                        <p style="max-width: 200px; text-align: center;" class="ppp">{{ item.name }}</p>
-                    </div>
-                </div>
-            </div>
-            </a>
-            {% endfor %}
-        </div>
-    </div>
+
+<div class="shape shape1 circle"></div>
+<div class="shape shape2"></div>
+<div class="shape shape3 circle"></div>
+
 {% endblock %}
