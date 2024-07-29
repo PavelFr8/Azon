@@ -28,27 +28,4 @@
         {% endif %}
     </h2>
 </div>
-{% for item in items %}
-<div class="col-md-6 border rounded-3 iiii border-3">
-    <div style="margin: auto;">
-        <a href="{{ url_for('item.profile', article=item.article) }}" style="color: black; text-decoration: none;">
-        {% if item.logo_data %}
-            <img src="data:image/jpeg;base64,{{ item.logo_data }}" alt="Фото товара" class="rounded-3 border-3" style="margin-right: 40px;">
-        {% endif %}
-        <div>
-            <h2 class="okj">{{ item.price }} ₽</h2>
-        </div>
-        <div>
-            <p style="max-width: 200px; text-align: center;" class="ppp">{{ item.name }}</p>
-        </div>
-        {% if shop.owner_id == current_user.id %}
-        <div style="margin: 0 12px; display: flex;">
-            <a href="{{ url_for('item.change', article=item.article) }}" class="btn btn-primary" style="margin-right: 8px;">Изменить</a>
-            <a href="{{ url_for('item.delete', article=item.article) }}" class="btn btn-danger">Удалить</a>
-        </div>
-        {% endif %}
-        </a>
-    </div>
-</div>
-{% endfor %}
 {% endblock %}
