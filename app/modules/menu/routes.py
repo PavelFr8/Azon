@@ -79,4 +79,4 @@ def items_by_category(category_name):
     for item in items:
         item.logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
 
-    return render_template('item.html', title=f'Товары в категории {category.name}', items=items)
+    return render_template('item.html', title=f'Товары в категории {category.name}', items=items, name=category.name)

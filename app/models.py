@@ -51,7 +51,7 @@ class Item(db.Model):
     img = sa.Column(sa.LargeBinary, nullable=False)
     category_id = sa.Column(sa.String, nullable=False)
     seller_id = sa.Column(sa.Integer, sa.ForeignKey("shops.id"))
-    comments = sa.Column(sa.Text, nullable=True)
+    comments = sa.Column(sa.JSON, nullable=True)
     rating = sa.Column(sa.String, nullable=True, default="0;0;0")
 
     shop = orm.relationship('Shop')

@@ -6,6 +6,7 @@ from app.utils.load_categories import categories
 
 
 class CommentForm(FlaskForm):
+    rate = IntegerField('Оценка', validators=[DataRequired()])
     text = TextAreaField('Комментарий', validators=[DataRequired()])
     submit = SubmitField('Вход')
 

@@ -8,8 +8,6 @@
 }
 
 .r {
-    background-color: #ff6b01;
-    border-color: #ff6b01;
     display: block;
     width: 85%;
     margin: auto;
@@ -34,15 +32,54 @@
     border-radius: 8px;
     width 50%;
 }
-
-.o {
-    filter: invert(100%);
-    margin-left: 20px;
-}
+        .card-img-top {
+            width: 100%;
+            height: auto;
+        }
+        .opa {
+            display: flex;
+            flex-direction: column;
+        }
+        .star-widget input[type="radio"] {
+            display: none;
+        }
+        .star-widget label {
+            font-size: 32px;
+            color: #ddd;
+            transition: color 0.2s;
+        }
+        .star-widget input[type="radio"]:checked ~ label,
+        .star-widget label:hover,
+        .star-widget label:hover ~ label {
+            color: #fd4;
+        }
+        .comment {
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        .card {
+            border: None;
+        }
+        .categories {
+            display: flex;
+            margin: auto;
+            margin-bottom: 20px;
+            width: 73.5vw;
+        }
+        .category-badge {
+            padding: 0em 0.9em;
+            margin: 0.1em;
+            color: #0d6efd;
+            border-radius: 0; /* Removed rounded border */
+            text-align: center;
+            display: inline-block; /* Ensure inline display */
+            font-size: 14px; /* Adjust font size */
+        }
 
 @media only screen and (min-width: 950px) {
     .price {
-        font-size: 25px;
+        font-size: 28px;
     }
     .o {
         display: flex;
@@ -72,7 +109,7 @@
 }
 
 .star-widget label {
-    font-size: 25px;
+    font-size: 32px;
     color: #444;
     padding: 5px;
     cursor: pointer;
@@ -82,6 +119,16 @@
 @media screen and (max-width: 768px) {
     .star-widget label {
         font-size: 25px;
+    }
+    .categories {
+        width: 100%;
+    }
+}
+
+@media (min-width: 992px) {
+    .boom {
+        width: 75%;
+        margin: auto;
     }
 }
 

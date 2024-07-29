@@ -1,8 +1,11 @@
+import json
+
 from flask import request, render_template, abort, redirect, url_for, flash
 from flask_login import login_required, current_user
 
 import base64
 import uuid
+import datetime
 
 from app.models import Item, Shop, Category, User
 from app import db, logger
@@ -63,13 +66,18 @@ def profile(article):
             abort(404)
 
         shop: Shop = Shop.query.get(item.seller_id)
-        comments = item.comments.split(';') if item.comments else []
+        comments = json.loads(item.comments)
 
         logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
         logo_data2 = base64.b64encode(shop.img).decode('utf-8') if shop.img else None
 
+        categories = []
+        for category in item.category_id.split(','):
+            if category != 1:
+                categories.append(Category.query.get(category))
+
         return render_template('item/item-profile.html', item=item, title=f'{item.name}', logo_data=logo_data,
-                               comments=comments, form=form, logo_data2=logo_data2)
+                               comments=comments, form=form, logo_data2=logo_data2, categors=categories)
     except Exception as e:
         logger.error(f"Error loading item profile: {e}")
         flash("Произошла ошибка при загрузке профиля товара.", 'danger')
@@ -81,36 +89,46 @@ def profile(article):
 @login_required
 def add_comment(article):
     form = CommentForm(request.form)
-    if form.validate_on_submit() and 'rate' in request.form:
-        try:
-            item: Item = Item.query.filter(Item.article == article)
-            if not item:
-                abort(404)
+    try:
+        if form.text.data.isspace():
+            raise Exception
+        form.rate = int(request.form['rate'])
+        item: Item = Item.query.filter(Item.article == article).first_or_404()
 
-            current_rating = item.rating
-            if current_rating:
-                sum_rating = int(current_rating.split(';')[0])
-                num_rating = int(current_rating.split(';')[1])
-            else:
-                sum_rating, num_rating, average_rating = 0, 0, 0
+        current_rating = item.rating
+        if current_rating:
+            sum_rating = int(current_rating.split(';')[0])
+            num_rating = int(current_rating.split(';')[1])
+        else:
+            sum_rating, num_rating, average_rating = 0, 0, 0
 
-            sum_rating += int(request.form['rate'])
-            num_rating += 1
-            average_rating = round(sum_rating / num_rating, 1)
-            item.rating = f"{sum_rating};{num_rating};{average_rating}"
+        sum_rating += form.rate
+        num_rating += 1
+        average_rating = round(sum_rating / num_rating, 1)
+        item.rating = f"{sum_rating};{num_rating};{average_rating}"
 
-            if item.comments:
-                item.comments += f";{form.text.data}"
-            else:
-                item.comments = form.text.data
+        if item.comments:
+            comments = json.loads(item.comments)
+            comments.append({
+                "date": datetime.date.today().strftime("%d %B %Y"),
+                "text": form.text.data.strip(),
+                "rate": form.rate
+            })
+            item.comments = json.dumps(comments)
+        else:
+            comments = [{
+                "date": datetime.date.today().strftime("%d %B %Y"),
+                "text": form.text.data,
+                "rate": form.rate
+            }]
+            item.comments = json.dumps(comments)
 
-            db.session.commit()
-            flash("Ваш отзыв успешно добавлен!", 'success')
-        except Exception as e:
-            logger.error(f"Error adding comment: {e}")
-            db.session.rollback()
-            flash("Произошла ошибка при добавлении отзыва.", 'danger')
-
+        db.session.commit()
+        flash("Ваш отзыв успешно добавлен!", 'success')
+    except Exception as e:
+        logger.error(f"Error adding comment: {e}")
+        db.session.rollback()
+        flash("Не удалось добавить отзыв.", 'danger')
     return redirect(url_for('item.profile', article=article))
 
 # Удаление товара

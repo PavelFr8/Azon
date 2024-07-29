@@ -3,97 +3,115 @@
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/item-prof.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <div class="container mt-4">
-    <h3 class="card-title">{{ item.name }}</h3>
-    <hr style="height: 3px;">
+    <div class="categories">
+        {% for category in categors %}
+        <a href="{{ url_for('menu.items_by_category', category_name=category.name) }}" class="text-decoration-none text-inherit">
+            <p class="category-badge"><b>{{ category.name }}</b></p>
+        </a>
+        {% if not loop.last %}
+        <b style="color: #0d6efd; padding-top: 2px;">•</b>
+        {% endif %}
+        {% endfor %}
+    </div>
     <div class="row">
-        <div class="col-md-5">
+        <!-- Product Image Section -->
+        <div class="col-lg-5 col-md-6 mb-4">
             <div class="card">
-                <img src="data:image/jpeg;base64,{{ logo_data }}" class="card-img-top" alt="Product Image" width="500" height="500">
+                <img src="data:image/jpeg;base64,{{ logo_data }}" class="card-img-top" alt="Product Image">
             </div>
-            <div class="card opa" style="width: 100%; box-sizing: border-box; display: block;">
-            <div class="card-body">
-                <h2>Отзывы</h2>
-                {% if current_user.is_authenticated %}
-                <form action="{{ url_for('item.add_comment', article=item.article) }}" method="post">
-                    {{ form.csrf_token }}
-                    <div class="container">
-                        <div class="star-widget">
-                            <input type="radio" name="rate" id="rate-5" value="5">
-                            <label for="rate-5" class="fas fa-star"></label>
-
-                            <input type="radio" name="rate" id="rate-4" value="4">
-                            <label for="rate-4" class="fas fa-star"></label>
-
-                            <input type="radio" name="rate" id="rate-3" value="3">
-                            <label for="rate-3" class="fas fa-star"></label>
-
-                            <input type="radio" name="rate" id="rate-2" value="2">
-                            <label for="rate-2" class="fas fa-star"></label>
-
-                            <input type="radio" name="rate" id="rate-1" value="1">
-                            <label for="rate-1" class="fas fa-star"></label>
-                        </div>
-                    </div>
-
-                    <div class="form-floating">
-                        {{ form.text(class="form-control", id="floatingInput", placeholder="Отзыв") }}
-                        <label for="floatingInput">Отзыв</label>
-                        <button type="submit" class="btn btn-primary w-40 py-2 fs-5 fw-bold" style="margin: 20px auto; display: flex;">Опубликовать отзыв</button>
-                        {% for error in form.text.errors %}
-                        <div class="alert alert-danger" role="alert">
-                            {{ error }}
-                        </div>
-                        {% endfor %}
-                    </div>
-                </form>
-                {% endif %}
-            </div>
-            <hr style="width: 100%; height: 2px;">
-            {% if comments %}
-            {% for com in comments %}
-                <div style="margin: auto;">
-                    <div>
-                        <p class="okj" style="margin-left: 20px; margin-right: 20px;">{{ com }}</p>
-                    </div>
-                </div>
-            <hr style="width: 100%; height: 2px;">
-            {% endfor %}
-            {% endif %}
         </div>
-        </div>
-        <div class="col-md-4">
+        <!-- Product Details Section -->
+        <div class="col-lg-4 col-md-6 mb-4">
             <div class="card">
                 <div class="card-body">
+                    <h3 class="card-title" style="margin-bottom: 20px;"><b>{{ item.name }}</b></h3>
                     <h5 class="card-title">Описание</h5>
                     <p class="card-text">{{ item.about }}</p>
-                    <br>
-                    <h5>Продавец:</h5>
-                    <a href="{{ url_for('shop.profile', shop_name=item.shop.name) }}"><img src="data:image/jpeg;base64,{{ logo_data2 }}" alt="Логотип магазина" width="230" height="230" class="rounded-3 border border-3 border-primary" style="margin-right: 40px;"></a>
+                    <a href="{{ url_for('shop.profile', shop_name=item.shop.name) }}" style="text-decoration: None; color: black; font-size: 21px">
+                        <img src="{{ url_for('static', filename='img/shop/shop.svg') }}" width="27px" height="25px" style="vertical-align: text-top;">
+                        {{ item.shop.name }}
+                    </a>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <!-- Pricing and Add to Cart Section -->
+        <div class="col-lg-3 col-md-12 mb-4">
             <div class="card">
                 <div class="card-body">
-                    <div class="price-box">
-                        <h2 class="card-text price">{{ item.price }} ₽</h2>
+                    <div class="price-box mb-3" style="display: inline-block;">
+                        <h2 class="price rounded-3" style="margin-bottom: 0px; background: limegreen;">{{ item.price }} ₽</h2>
                     </div>
-                    <div class="rating" data-value="{{ item.rating.split(';')[2] }}">
-                        <h2 class="rating-value">Рейтинг: {{ item.rating.split(';')[2] }}</h2>
+                    <div class="mb-3" data-value="{{ item.rating.split(';')[2] }}" style="display: inline-block; text-align:right; float: right;">
+                        <h2 class="rating-value" style="color: black;">
+                            <label class="fas fa-star" style="color: #fd4;"></label>
+                            {{ item.rating.split(';')[2] }}
+                        </h2>
                     </div>
                     {% if current_user.is_authenticated %}
-                    <a href="#" id="addToCartButton" onclick="addToCart('{{ url_for('api.api_add_to_cart', article=item.article) }}')" class="btn btn-primary r">
-                        Добавить в корзину
-                        <img src="{{ url_for('static', filename='img/header/shopping_cart.svg') }}" alt="mdo" width="32" height="32" class="o">
+                    <a href="#" id="addToCartButton" onclick="addToCart('{{ url_for('api.api_add_to_cart', article=item.article) }}')" class="btn btn-primary w-100">
+                        <img src="{{ url_for('static', filename='img/header/shopping_cart.svg') }}" alt="Корзина" width="32" height="32" style="filter: invert(100%); margin-right: 5px;">
+                        В корзину
                     </a>
                     {% else %}
-                    <a href="{{ url_for('registration.login') }}" class="btn btn-primary r">Добавить в корзину<img src="{{ url_for('static', filename='img/header/shopping_cart.svg') }}" alt="mdo" width="32" height="32" class="o"></a>
+                    <a href="{{ url_for('registration.login') }}" class="btn btn-primary w-100">
+                        <img src="{{ url_for('static', filename='img/header/shopping_cart.svg') }}" alt="Корзина" width="32" height="32" style="filter: invert(100%); margin-right: 5px;">
+                        В корзину
+                    </a>
                     {% endif %}
                 </div>
             </div>
         </div>
+    </div>
+    <div class="col-lg-3 col-md-12 mb-4 boom">
+            <div class="card mt-3 opa">
+                <div class="card-body">
+                    <h2>Отзывы</h2>
+                    {% if current_user.is_authenticated %}
+                    <form action="{{ url_for('item.add_comment', article=item.article) }}" method="post">
+                        {{ form.hidden_tag() }}
+                        <div class="star-widget mb-3">
+                            {% for i in range(5, 0, -1) %}
+                            <input type="radio" name="rate" id="rate-{{ i }}" value="{{ i }}">
+                            <label for="rate-{{ i }}" class="fas fa-star"></label>
+                            {% endfor %}
+                        </div>
+                        <div class="form-floating mb-3">
+                            {{ form.text(class="form-control", id="floatingInput", placeholder="Отзыв") }}
+                            <label for="floatingInput">Отзыв</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 py-2 fs-5 fw-bold">Опубликовать отзыв</button>
+                        {% for error in form.text.errors %}
+                        <div class="alert alert-danger mt-2" role="alert">
+                            {{ error }}
+                        </div>
+                        {% endfor %}
+                    </form>
+                    {% endif %}
+                </div>
+            <!-- Display Comments -->
+            {% if comments %}
+            <div class="comments-section">
+                {% for com in comments %}
+                <div class="comment mb-3 p-3 rounded" style="border: 1px solid #ddd; background-color: #f9f9f9;">
+                    <div class="comment-header mb-2" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="comment-date text-muted">{{ com["date"] }}</span>
+                        <span class="comment-rate" style="color: #fd4;">
+                            {% for i in range(com["rate"]|int) %}
+                            <label class="fas fa-star"></label>
+                            {% endfor %}
+                        </span>
+                    </div>
+                    <div class="comment-body">
+                        <p class="mb-0">{{ com["text"] }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            </div>
     </div>
 </div>
 <script>
@@ -105,17 +123,10 @@ function addToCart(url) {
             'X-CSRFToken': '{{ csrf_token() }}'
         }
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
         if (data.success) {
             console.log('Успешно добавлено в корзину:', data);
-
-            // Change the button color to green
             var button = document.getElementById('addToCartButton');
             button.classList.remove('btn-primary');
             button.classList.add('btn-success');
