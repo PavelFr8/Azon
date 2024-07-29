@@ -84,7 +84,7 @@
                         <h2 class="rating-value">Рейтинг: {{ item.rating.split(';')[2] }}</h2>
                     </div>
                     {% if current_user.is_authenticated %}
-                    <a href="#" onclick="addToCart('{{ url_for('api.api_add_to_cart', article=item.article) }}')" class="btn btn-primary r">
+                    <a href="#" id="addToCartButton" onclick="addToCart('{{ url_for('api.api_add_to_cart', article=item.article) }}')" class="btn btn-primary r">
                         Добавить в корзину
                         <img src="{{ url_for('static', filename='img/header/shopping_cart.svg') }}" alt="mdo" width="32" height="32" class="o">
                     </a>
@@ -114,7 +114,12 @@ function addToCart(url) {
     .then(data => {
         if (data.success) {
             console.log('Успешно добавлено в корзину:', data);
-            // Обновите интерфейс пользователя, если требуется
+
+            // Change the button color to green
+            var button = document.getElementById('addToCartButton');
+            button.classList.remove('btn-primary');
+            button.classList.add('btn-success');
+            button.textContent = 'Добавлено в корзину';
         } else {
             console.error('Ошибка при добавлении в корзину:', data);
         }

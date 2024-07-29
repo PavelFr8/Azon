@@ -3,14 +3,16 @@
 {% block content %}
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/item2.css') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <div class="card" style="display: flex; width: 78%; margin: 50px auto;">
     <div class="card-body">
         <h2 class="card-title">Корзина</h2>
         {% for item in items %}
-        <a href="{{ url_for('item.profile', article=item.article) }}" style="color: black; text-decoration: none;">
+        <div class="item-card" id="item-{{ item.article }}">
             <div class="col-md-6 border rounded-3 iiii border-3">
                 <div style="margin: auto;">
+                    <a href="{{ url_for('item.profile', article=item.article) }}" style="color: black; text-decoration: none;">
                     {% if item.logo_data %}
                     <img src="data:image/jpeg;base64,{{ item.logo_data }}" alt="Фото товара" class="rounded-3 border border-3 border-primary" style="margin-right: 40px;">
                     {% endif %}
@@ -23,12 +25,13 @@
                     <div>
                         <p style="max-width: 200px; text-align: center;" class="ppp">{{ item.amount }}</p>
                     </div>
+                    </a>
                     <div style="margin: 0 12px; display: flex;">
-                        <a href="{{ url_for('shopping_cart.delete', article=item.article) }}" class="btn btn-danger">Удалить</a>
+                        <button onclick="deleteFromCart('{{ url_for('api.delete_from_cart', article=item.article) }}', '{{ item.article }}')" class="btn btn-danger">Удалить</button>
                     </div>
                 </div>
             </div>
-        </a>
+        </div>
         {% endfor %}
     </div>
 </div>
@@ -39,4 +42,46 @@
 {% else %}
 <a class="btn btn-primary">Оплатить</a>
 {% endif %}
+
+<script>
+function getCsrfToken() {
+    return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+}
+
+function deleteFromCart(url, article) {
+    console.log('Attempting to delete item with article:', article);  // Логирование для отладки
+    console.log('CSRF Token:', getCsrfToken());  // Логирование для отладки
+    console.log('Request URL:', url);  // Логирование для отладки
+
+    fetch(url, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCsrfToken()
+        }
+    })
+    .then(response => {
+        console.log('Response status:', response.status);  // Логирование для отладки
+        if (response.status === 204) {
+            return { success: true };  // Возвращаем объект успеха для статуса 204
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Response data:', data);  // Логирование для отладки
+        if (data.success) {
+            console.log('Товар успешно удален из корзины:', data);
+            const itemElement = document.getElementById(`item-${article}`);
+            if (itemElement) {
+                itemElement.remove();
+            }
+        } else {
+            console.error('Ошибка при удалении товара из корзины:', data.message || 'Неизвестная ошибка');
+        }
+    })
+    .catch(error => {
+        console.error('Ошибка при выполнении DELETE-запроса:', error);
+    });
+}
+</script>
 {% endblock %}
