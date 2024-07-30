@@ -4,7 +4,14 @@ function getCsrfToken() {
     return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 }
 
-function deleteFromCart(url, article) {
+function updateTotalPrice(price) {
+    const totalPriceElement = document.getElementById('total-price');
+    let currentTotal = parseFloat(totalPriceElement.innerText.replace('Итого: ', '').replace(' ₽', ''));
+    currentTotal -= price;
+    totalPriceElement.innerText = `Итого: ${currentTotal.toString().replace(/(\.\d*[1-9])0+$|\.0*$/, '$1')} ₽`;
+}
+
+function deleteFromCart(url, article, price) {
     console.log('Attempting to delete item with article:', article);
     console.log('CSRF Token:', getCsrfToken());
     console.log('Request URL:', url);
@@ -31,6 +38,7 @@ function deleteFromCart(url, article) {
             if (itemElement) {
                 itemElement.remove();
             }
+            updateTotalPrice(price);
         } else {
             console.error('Ошибка при удалении товара из корзины:', data.message || 'Неизвестная ошибка');
         }

@@ -11,5 +11,5 @@ def cart():
     total_price = 0
     items = current_user.get_items_in_cart()
     for item in items:
-        total_price += item.price
-    return render_template('shopping_cart/cart.html', title='Корзина', items=items, total_price=total_price)
+        total_price += item.price * item.amount
+    return render_template('shopping_cart/cart.html', title='Корзина', items=items, total_price=total_price, cart=True)

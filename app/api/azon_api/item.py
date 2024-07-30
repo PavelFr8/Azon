@@ -6,7 +6,6 @@ from app.models import ShoppingCart, Item
 from app import db, logger
 
 
-
 # Delete item from shop
 @module.route("/deleteFromShop/<int:article>", methods=["DELETE"])
 @login_required

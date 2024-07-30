@@ -1,11 +1,12 @@
-{% if not seller %}
+{% if not (seller or cart) %}
     {% extends "base.html" %}
 {% endif %}
 {% block content %}
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/item.css') }}">
     <script src="{{ url_for('static', filename='js/delete_item.js') }}"></script>
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/cart.js') }}"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body>
     <h2 class="mt-4" style="margin-bottom: 20px;">{{ name }}</h2>
@@ -17,7 +18,11 @@
                 <img src="data:image/jpeg;base64,{{ item.logo_data }}" alt="Фото товара" class="rounded-3 border-3" style="margin-right: 40px;">
                 {% endif %}
                 <div>
+                    {% if cart %}
+                    <h2 class="okj">{{ item.price * item.amount }} ₽</h2>
+                    {% else %}
                     <h2 class="okj">{{ item.price }} ₽</h2>
+                    {% endif %}
                 </div>
                 <div>
                     <p style="max-width: 200px; text-align: center;" class="ppp">{{ item.name }}</p>
@@ -28,6 +33,12 @@
         <div style="margin: 5px 12px;">
             <a href="{{ url_for('item.change', article=item.article) }}" class="btn btn-primary" style="width: fit-content; margin: auto; margin-bottom: 8px; display: block;">Изменить</a>
             <button onclick="deleteItem('{{ url_for('api.delete_item', article=item.article) }}', {{ item.article }})" class="btn btn-danger" style="width: fit-content; margin: auto; display: block;">Удалить</button>
+        </div>
+        {% endif %}
+        {% if cart %}
+        <div style="margin: 5px 12px;">
+            <button onclick="deleteFromCart('{{ url_for('api.delete_from_cart', article=item.article) }}', '{{ item.article }}', {{ item.price * item.amount }})" class="btn btn-danger" style="padding: .0001rem .29rem; position: absolute; top: 0%; right: 0%">✖</button>
+           <p style="margin-bottom: 0rem;">Всего: {{ item.amount }} шт</p>
         </div>
         {% endif %}
     </div>
