@@ -15,7 +15,7 @@ class User(db.Model, UserMixin):
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     email = sa.Column(sa.String, unique=True, nullable=False, index=True)
     hashed_password = sa.Column(sa.String, nullable=False)
-    address = sa.Column(sa.String, nullable=False, default="Не указано")
+    address = sa.Column(sa.String, nullable=False, default="Не указан")
     created_date = sa.Column(sa.DateTime, default=datetime.datetime.now)
 
     shop = orm.relationship('Shop', back_populates='user')

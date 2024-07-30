@@ -58,7 +58,7 @@ def profile(shop_name):
         item.logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
 
     return render_template('shop/shop-profile.html', shop=shop, items=items, title=f'Профиль магазина "{shop.name}"',
-                           logo_data=logo_data)
+                           logo_data=logo_data, seller=True)
 
 
 # Редактирование данных о магазине

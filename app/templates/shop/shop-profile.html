@@ -4,28 +4,37 @@
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/shop-prof.css') }}">
 </head>
-<main class="form-signin w-100 m-auto">
-    <h1 class="h3 mb-3 font-weight-bolder fs-1" style="margin: 20px auto; text-align: center;"><img src="data:image/jpeg;base64,{{ logo_data }}" alt="Логотип магазина" width="230" height="230" class="rounded-3 border-3" style="margin-right: 40px;">{{ shop.name }}</h1>
-    <div class="card" style="display: flex; width: 70%; margin: auto;">
-        <div class="card-body">
-            <h1>Информация</h1>
-            <br>
-            <h2 class="card-title font-weight-bold">О магазине</h2>
-            <p class="font-weight-normal fs-5">{{ shop.about }}</p>
-            <br>
-            <h2 class="card-title font-weight-bold">Контактная информация</h2>
-            <p class="font-weight-normal fs-5">{{ shop.contact }}</p>
-            {% if shop.owner_id == current_user.id %}
-            <a href="{{ url_for('shop.change_info', shop_name=shop.name) }}" class="btn btn-primary" type="button">Изменить данные</a>
-            {% endif %}
+<body>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 mb-4">
+                <div class="card" style="border: None">
+                    <h1 class="h3 mb-3 font-weight-bolder" style="margin: auto; text-align: center; margin-bottom: 20px;">{{ shop.name }}</h1>
+                    <img src="data:image/jpeg;base64,{{ logo_data }}" alt="Логотип магазина" width="200" class="rounded-3 border-3" style="margin: auto;">
+                </div>
+            </div>
+            <div class="col-lg-5 col-md-6 mb-4">
+                <div class="card" style="border: None">
+                    <div class="card-body">
+                        <h4 class="card-title font-weight-bold">О магазине</h4>
+                        <p>{{ shop.about }}</p>
+                        <h4 class="card-title font-weight-bold">Контактная информация</h4>
+                        <p>{{ shop.contact }}</p>
+                        {% if shop.owner_id == current_user.id %}
+                        <a href="{{ url_for('shop.change_info', shop_name=shop.name) }}" class="btn btn-primary" type="button">Изменить данные</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</main>
-<div style="text-align: center; margin-top: 50px; margin-bottom: 50px;">
-    <h2 class="card-title">Товары
+</body>
+<div style="margin-top: 50px; margin-bottom: 50px;">
+    <h2 class="card-title" style="text-align: center;">Товары
         {% if shop.owner_id == current_user.id %}
         <a href="{{ url_for('item.register', shop_name=shop.name) }}" class="btn btn-primary" style="margin-left: 20px;">Добавить</a>
         {% endif %}
     </h2>
+    {% include "item.html" %}
 </div>
 {% endblock %}

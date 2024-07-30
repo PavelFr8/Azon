@@ -1,4 +1,4 @@
-from flask import flash, jsonify, abort
+from flask import flash, jsonify
 from flask_login import login_required, current_user
 
 from app.api.azon_api import module

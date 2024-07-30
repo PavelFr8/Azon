@@ -1,26 +1,36 @@
-{% extends "base.html" %}
+{% if not seller %}
+    {% extends "base.html" %}
+{% endif %}
 {% block content %}
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/item.css') }}">
+    <script src="{{ url_for('static', filename='js/delete_item.js') }}"></script>
+        <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body>
     <h2 class="mt-4" style="margin-bottom: 20px;">{{ name }}</h2>
     {% for item in items %}
-    <a href="{{ url_for('item.profile', article=item.article) }}" style="color: black; text-decoration: none;">
-    <div class="col-md-6 border rounded-3 iiii border-2">
-        <div style="margin: auto;">
-            {% if item.logo_data %}
-            <img src="data:image/jpeg;base64,{{ item.logo_data }}" alt="Фото товара" class="rounded-3 border-3" style="margin-right: 40px;">
-            {% endif %}
-            <div>
-                <h2 class="okj">{{ item.price }} ₽</h2>
+    <div class="col-md-6 border rounded-3 iiii border-2" id="item-{{ item.article }}">
+        <a href="{{ url_for('item.profile', article=item.article) }}" style="color: black; text-decoration: none;">
+            <div style="margin: auto;">
+                {% if item.logo_data %}
+                <img src="data:image/jpeg;base64,{{ item.logo_data }}" alt="Фото товара" class="rounded-3 border-3" style="margin-right: 40px;">
+                {% endif %}
+                <div>
+                    <h2 class="okj">{{ item.price }} ₽</h2>
+                </div>
+                <div>
+                    <p style="max-width: 200px; text-align: center;" class="ppp">{{ item.name }}</p>
+                </div>
             </div>
-            <div>
-                <p style="max-width: 200px; text-align: center;" class="ppp">{{ item.name }}</p>
-            </div>
+        </a>
+        {% if seller and shop.owner_id == current_user.id %}
+        <div style="margin: 5px 12px;">
+            <a href="{{ url_for('item.change', article=item.article) }}" class="btn btn-primary" style="width: fit-content; margin: auto; margin-bottom: 8px; display: block;">Изменить</a>
+            <button onclick="deleteItem('{{ url_for('api.delete_item', article=item.article) }}', {{ item.article }})" class="btn btn-danger" style="width: fit-content; margin: auto; display: block;">Удалить</button>
         </div>
+        {% endif %}
     </div>
-    </a>
     {% endfor %}
 </body>
 {% endblock %}

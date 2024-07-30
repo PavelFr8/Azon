@@ -66,14 +66,18 @@ def profile(article):
             abort(404)
 
         shop: Shop = Shop.query.get(item.seller_id)
-        comments = json.loads(item.comments)
+
+        if item.comments:
+            comments = json.loads(item.comments)
+        else:
+            comments = ''
 
         logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
         logo_data2 = base64.b64encode(shop.img).decode('utf-8') if shop.img else None
 
         categories = []
         for category in item.category_id.split(','):
-            if category != 1:
+            if category != '17':
                 categories.append(Category.query.get(category))
 
         return render_template('item/item-profile.html', item=item, title=f'{item.name}', logo_data=logo_data,
@@ -130,29 +134,6 @@ def add_comment(article):
         db.session.rollback()
         flash("Не удалось добавить отзыв.", 'danger')
     return redirect(url_for('item.profile', article=article))
-
-# Удаление товара
-@module.route('/delete/<int:article>', methods=['GET', 'POST'])
-@login_required
-def delete(article):
-    try:
-        item: Item = Item.query.filter(Item.article == article)
-        if not item:
-            abort(404)
-
-        # Удаляем товар из корзины каждого пользователя, у которого он есть
-        users_with_item = User.query.filter(User.shopping_cart.like(f"%{item.id}%"))
-        for user in users_with_item:
-            user.shopping_cart = ','.join(filter(lambda x: x != str(item.id), user.shopping_cart.split(',')))
-
-        db.session.delete(item)
-        db.session.commit()
-        flash("Товар успешно удален!", 'success')
-        return redirect(url_for('shop.profile', shop_name=item.shop.name))
-    except Exception as e:
-        logger.error(f"Error deleting item: {e}")
-        db.session.rollback()
-        flash("Произошла ошибка при удалении товара.", 'danger')
 
 
 # Изменение данных о товаре
