@@ -16,7 +16,7 @@
             <br>
             <h2 class="card-title font-weight-bold" style="margin-top: 18px; margin-bottom: 5px;">Адрес</h2>
             <p class="font-weight-normal fs-5" style="margin: 5px;">{{ user.address }}</p>
-            <a href="#" class="btn btn-secondary">Изменить адрес</a>
+            <a href="{{ url_for('location.address') }}" class="btn btn-secondary">Изменить адрес</a>
         </div>
     </div>
 </main>

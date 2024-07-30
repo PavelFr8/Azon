@@ -1,10 +1,11 @@
+import os
+
 from .geocoder import get_coords
 from .find_business import find_bis
-from .get_api_keys import get_api_keys
 
 
 def find_shops(text):
-    key1, key2 = get_api_keys()
+    key1, key2 = os.environ.get('GEOCODE_KEY'), os.environ.get('ORG_KEY')
     toponym_to_find = text
     if toponym_to_find:
         try:

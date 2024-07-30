@@ -1,41 +1,37 @@
-<!doctype html>
-<html lang="en">
+{% extends "base.html" %}
+{% block content %}
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <title>{{ title }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="shortcut icon" href="{{ url_for('static', filename='img/header/favicon.png') }}" type="image/png">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/address.css') }}">
 </head>
 <body>
-    <div class="card" style="display: flex; margin: 50px auto; width: 75%">
-        <br>
-        <h3 style="text-align: center">Введите свой адрес, а затем выберите один из ближайших к вашему адресу пунктов выдачи.</h3>
-        <form action="{{ url_for('address') }}" method="GET" style="display: flex; width: 95%; margin: 20px auto;">
-            {% if text %}
-            <input type="search" class="form-control" placeholder="Поиск" aria-label="Search" name="query" value="{{ text }}">
-            {% else %}
-            <input type="search" class="form-control" placeholder="Поиск" aria-label="Search" name="query">
-            {% endif %}
+    <div class="card card-container">
+        <h3 class="text-center mb-4">Введите свой адрес, а затем выберите один из ближайших к вашему адресу пунктов выдачи.</h3>
+        <form action="{{ url_for('location.address') }}" method="GET" class="form-container">
+            <input type="search" class="form-control search-input" placeholder="Поиск" aria-label="Search" name="address" value="{{ text if text else '' }}">
+            <button type="submit" class="btn btn-primary">Поиск</button>
         </form>
-        <h1>{{ message }}</h1>
         {% if closest_shops and message != 'Некорректные введённые данные' %}
-        <div class="row" style="margin: auto; display: flex; width: 92%">
+        <div class="row mt-4" style="margin: auto; display: flex; width: 92%;">
             {% for address in closest_shops %}
             <div class="col-md-4 mb-4">
-                <div class="card">
+                <div class="card h-100">
                     <div class="card-body">
                         <p class="card-title">Адрес: {{ address[0] }}</p>
                         <p class="card-text">Телефон: {{ address[1] }}</p>
                         <p class="card-text">График работы: {{ address[2] }}</p>
-                        <a href="{{ url_for('choose_address', address=address[0]) }}" class="btn btn-primary">Указать как адрес</a>
+                        <a href="{{ url_for('location.choose_address', address=address[0]) }}" class="btn btn-primary">Указать как адрес</a>
                     </div>
                 </div>
             </div>
             {% endfor %}
         </div>
+        {% else %}
+        <div class="mt-4 text-center text-danger">{{ message }}</div>
         {% endif %}
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kaRVD73vvw8sWBsvJpYRGhvVbjhZqt3VYhF6ZP1IF7E8Cm+fqA2X+vNY0qS0HKOQ" crossorigin="anonymous"></script>
 </body>
-</html>
+{% endblock %}

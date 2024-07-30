@@ -61,4 +61,7 @@ def create_app():
     import app.modules.shopping_cart as shopping_cart
     app.register_blueprint(shopping_cart.module)
 
+    import app.modules.location as location
+    app.register_blueprint(location.module)
+
     return app
