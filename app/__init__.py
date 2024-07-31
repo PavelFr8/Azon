@@ -64,4 +64,7 @@ def create_app():
     import app.modules.location as location
     app.register_blueprint(location.module)
 
+    import app.modules.paying as paying
+    app.register_blueprint(paying.module)
+
     return app

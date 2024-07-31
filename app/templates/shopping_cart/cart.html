@@ -13,7 +13,7 @@
         <div class="col-lg-3 col-md-6 mb-4" style="margin-top: 4%">
             <div class="card" style="border: None;">
                 <h3 id="total-price">Итого: {{ total_price }} ₽</h3>
-                <a class="btn btn-primary" href="#" style="background: rgba(16, 196, 76, 1); border: None">Перейти к оплате</a>
+                <a class="btn btn-primary" href="{{ url_for('paying.buy') }}" style="background: rgba(16, 196, 76, 1); border: None"><b>Перейти к оплате</b></a>
             </div>
         </div>
     </div>

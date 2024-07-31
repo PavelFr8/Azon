@@ -52,7 +52,7 @@
                         </h2>
                     </div>
                     {% if current_user.is_authenticated %}
-                    <a href="#" id="addToCartButton" onclick="addToCart('{{ url_for('api.api_add_to_cart', article=item.article) }}')" class="btn btn-primary w-100">
+                    <a href="#" id="addToCartButton" onclick="event.preventDefault(); addToCart('{{ url_for('api.api_add_to_cart', article=item.article) }}')" class="btn btn-primary w-100">
                         <img src="{{ url_for('static', filename='img/header/shopping_cart.svg') }}" alt="Корзина" width="32" height="32" style="filter: invert(100%); margin-right: 5px;">
                         В корзину
                     </a>
