@@ -5,6 +5,8 @@ from flask_debugtoolbar import DebugToolbarExtension
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_wtf import CSRFProtect
+from flask_restful import Api
+from flask_jwt_extended import JWTManager
 
 from dotenv import load_dotenv
 
@@ -13,15 +15,17 @@ import logging
 
 db = SQLAlchemy()  # create database
 login_manager = LoginManager()  # create manager for login
+csrf = CSRFProtect()  # create csrf protection
+jwt = JWTManager()  # create jwt manager
+
+# create logger
 logging.basicConfig(level=logging.DEBUG)
-# login_manager.session_protection = "strong"
-logger = logging.getLogger(__name__)  # create logger
+logger = logging.getLogger(__name__)
 
 
 def create_app():
     # create Flask app
     app = Flask(__name__)
-    csrf = CSRFProtect(app)
 
     # get from .env app settings
     load_dotenv()
@@ -37,6 +41,10 @@ def create_app():
     # register azon api
     import app.api.azon_api as azon_api
     app.register_blueprint(azon_api.module)
+
+    # register azon REST api
+    import app.api.api as api
+    app.register_blueprint(api.module)
 
     # register errors handler
     import app.errors as errors

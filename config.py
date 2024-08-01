@@ -11,6 +11,11 @@ class Config(object):
     WTF_CSRF_ENABLED = True
     WTF_CSRF_SECRET_KEY = os.environ.get("WTF_CSRF_SECRET_KEY")
 
+    JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
+    JWT_TOKEN_LOCATION = ['cookies']
+    JWT_COOKIE_CSRF_PROTECT = True
+    JWT_CSRF_CHECK_FORM = True
+
     SESSION_COOKIE_SECURE=True
     SESSION_COOKIE_HTTPONLY=True
     SESSION_COOKIE_SAMESITE="Lax"
