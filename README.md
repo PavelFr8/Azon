@@ -295,7 +295,5 @@ Azon is open-source software licensed under the MIT License. See the [LICENSE](L
 
 For any questions or suggestions, please reach out to us at:
 
-- **Email**: support@azon.com
-- **GitHub**: [Azon Project](https://github.com/yourusername/azon)
-- **Twitter**: [@AzonApp](https://twitter.com/AzonApp)
+- **GitHub**: [Azon Project]([https://github.com/yourusername/azon](https://github.com/PavelFr8/Azon))
 
