@@ -258,5 +258,5 @@ Azon uses JSON Web Tokens (JWT) for authentication. Include the following in you
 
 For any questions or suggestions, please reach out to us at:
 
-- **GitHub**: [Azon Project]([https://github.com/yourusername/azon](https://github.com/PavelFr8/Azon))
+- **GitHub**: [Azon Project](https://github.com/PavelFr8/Azon)
 
