@@ -14,7 +14,7 @@ def delete_item(article):
     if not current_user.id == item.shop.owner_id:
         raise Exception
     try:
-        # Удаляем товар из корзины каждого пользователя, у которого он есть
+        # Delete that item from all users shopping carts where it exist
         carts_with_item = ShoppingCart.query.filter_by(item_id=item.id).all()
         for cart in carts_with_item:
             db.session.delete(cart)

@@ -1,15 +1,13 @@
 from flask import request, render_template, flash, redirect, url_for
 from flask_login import current_user, login_required
 
-import base64
-
-from app.models import Item, User, ShoppingCart
+from app.models import User
 from app import db, logger
 from . import module
 from .forms import UserChangePasswordForm
 
 
-# Личный профиль пользователя
+# User profile
 @module.route('/profile')
 @login_required
 def profile():
@@ -17,7 +15,7 @@ def profile():
     return render_template('user_profile/profile.html', user=current_user, title='Ваш профиль', items=items)
 
 
-# Обновление пароля аккаунта
+# Update user password
 @module.route('/change_password/<int:id>', methods=['GET', 'POST'])
 @login_required
 def change_password(id: int):

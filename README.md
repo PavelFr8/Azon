@@ -1,51 +1,30 @@
 # Azon
 
-Проект "Azon" представляет собой веб-приложение интернет-магазина, разработанное с использованием Flask. Основная цель 
-приложения - обеспечить пользователям удобный и безопасный 
-опыт онлайн-шопинга, предоставив возможность как покупать 
-товары, так и продавать их.
+The "Azon" project is an online store web application developed using Flask. The main goal of the application is to provide users with a convenient and safe online shopping experience, providing the opportunity to both buy and sell products.
 
-## Использованные технологии
+## Used technologies
 * Python 3.9;
 * Flask (Web application framework);
 * PostgreSQL (database);
 * SQLAlchemy (working with database from Python);
-* HTML, CSS;
+* HTML, CSS, JS;
 * Bootstrap (CSS and JS framework);
 * Jinja2 (Templating engine);
 * [Yandex Maps API](https://yandex.ru/maps-api/) (finding places);
-
-## Требования
-
-Для запуска проекта вам понадобится Python версии 3.9+ 
-
-Установите необходимые библиотеки, выполнив команду:
-
-pip install -r requirements.txt
-
-Вставьте ключи от API Yandex Maps в файл **.env**
+* Flask-RESTful (Creating Azon API);
 
 
-## Структура проекта
+## How to run
 
-- **app.py**: Главный файл приложения, содержащий основной код Flask.
-- **.env**: Хранилище переменных виртуального окружения.
-- **templates**: Шаблоны HTML-страниц.
-- **static/**: Статические файлы, такие как CSS, изображения и т.д.
-- **requirements.txt**: Список зависимостей проекта.
-- **data**: Функции для работы с базой данных.
-- **func**: Вспомогательные функции.
+Run **start.sh**
+```commandline
+./start.sh
+```
 
+**OR**
 
-## Запуск
-source venv/bin/activate
-
-flask db init
-
-flask db migrate -m "Initial migration."
-
-flask db upgrade
-
-flask category_load
-
-flask run
+1. ```python -m venv venv```
+2. ```source venv/bin/activate```
+3. Init database
+4. ```flask category_load```
+5. ```flask run```

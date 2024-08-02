@@ -4,7 +4,8 @@ from flask_jwt_extended import create_access_token
 from app.models import User
 from . import module
 
-# Вход пользователя и выдача JWT токена
+
+# User sing in and get his JWT access token
 @module.route('/login', methods=['POST'])
 def login():
     email = request.json.get('email', None)

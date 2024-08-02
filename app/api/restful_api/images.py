@@ -7,7 +7,7 @@ from app.models import Shop, Item
 from . import api
 
 
-
+# api resource for interaction with items and shops logos
 class ImageResource(Resource):
     def get(self, shop_name=None, article=None):
         if shop_name:

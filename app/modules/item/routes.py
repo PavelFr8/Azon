@@ -14,7 +14,7 @@ from . import module
 from .forms import ItemForm, CommentForm
 
 
-# Регистрация нового товара
+# Create a new Item
 @module.route('/register/<string:shop_name>', methods=['POST', 'GET'])
 @login_required
 def register(shop_name):
@@ -56,7 +56,7 @@ def register(shop_name):
     return render_template('item/item-register.html', title='Добавление нового товара', form=form, item=None)
 
 
-# Профиль товара
+# Item profile
 @module.route('/profile/<int:article>')
 def profile(article):
     form = CommentForm()
@@ -88,7 +88,7 @@ def profile(article):
         return redirect(url_for('menu.index'))
 
 
-# Обработчик для отправки отзывов
+# Add new comment
 @module.route('/add_comment/<int:article>', methods=['POST'])
 @login_required
 def add_comment(article):
@@ -136,7 +136,7 @@ def add_comment(article):
     return redirect(url_for('item.profile', article=article))
 
 
-# Изменение данных о товаре
+# Changing item data
 @module.route('/change/<int:article>', methods=['GET', 'POST'])
 @login_required
 def change(article):

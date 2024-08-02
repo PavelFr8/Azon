@@ -4,7 +4,7 @@ from app.models import Shop, Category
 
 def inject():
     """
-    shops теперь типо глобальная переменная для жижи
+    shops now global for Jinja2
     :return: dict
     """
     if current_user.is_authenticated:

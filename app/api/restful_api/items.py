@@ -10,6 +10,7 @@ from app.models import Shop, Item, Category
 from . import api
 
 
+# api resource for interaction with user shop
 class ItemResource(Resource):
     @jwt_required()
     def get(self, article=None):

@@ -7,15 +7,9 @@ from app.models import User, Item, Shop, Category
 from . import module
 
 
-# Главная страница
+# Main page
 @module.route('/')
 def index():
-    # Проверяем куки
-    username = request.cookies.get('username')
-    if username and not current_user.is_authenticated:
-        user = User.query.filter_by(email=username).first()
-        if user:
-            login_user(user)
     items = Item.query.all()
     for item in items:
         item.logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
@@ -23,26 +17,26 @@ def index():
     return render_template("item.html", title='Azon', items=items, categories=categories)
 
 
-# Страница "Стать продавцом"
+# Page "Стать продавцом"
 @module.route('/info')
 def info():
     return render_template('menu/become_a_seller.html', title='Программа продавцов')
 
 
-# Страница "О нас"
+# Page "О нас"
 @module.route('/about')
 def about():
     return render_template('menu/about.html', title='О нас')
 
 
-# Страница "Категории"
+# Page "Категории"
 @module.route('/categories')
 def categories():
     categories = Category.query.all()[1:]
     return render_template('menu/category.html', title='Категории', categors=categories)
 
 
-# Страница "Продавцы"
+# Page "Продавцы"
 @module.route('/shops')
 def shops():
     shops = Shop.query.all()
@@ -51,14 +45,16 @@ def shops():
     return render_template('menu/shops.html', title='Продавцы', shops=shops)
 
 
-# Поиск по имени товара
+# searching item
 @module.route('/search')
 def search_item():
-    query = request.args.get('query')  # Получаем значение запроса из параметра 'query'
+    query = request.args.get('query')  # get 'query'
     if query:
-        items = Item.query.filter(Item.name.ilike(f'%{query}%')).all()  # Ищем товары по названию
+        items = Item.query.filter(Item.name.ilike(f'%{query}%')).all()  # search by name
+        if not items:
+            items = Item.query.filter(Item.article == query).all() # search by article
     else:
-        items = Item.query.all()  # Ищем все товары
+        items = Item.query.all()
     for item in items:
         item.logo_data = base64.b64encode(item.img).decode('utf-8') if item.img else None
     if query == '':
@@ -68,7 +64,7 @@ def search_item():
         return render_template("item.html", title='Результаты поиска', items=items, text=query)
 
 
-# Отображение товаров по выбранной категории
+# Get items from category
 @module.route('/categories/<string:category_name>')
 def items_by_category(category_name):
     category = Category.query.filter_by(name=category_name).first()

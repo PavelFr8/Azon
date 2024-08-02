@@ -8,6 +8,7 @@ from app import db, logger
 from . import module
 
 
+# Choosing address
 @module.route('/address', methods=['GET', 'POST'])
 @login_required
 def address():
@@ -27,6 +28,7 @@ def address():
                            closest_shops=closest_shops)
 
 
+# Change user address
 @module.route('/choose/<address>')
 @login_required
 def choose_address(address):

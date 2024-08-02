@@ -7,7 +7,7 @@ from . import module
 from .forms import RegisterForm, LoginForm
 
 
-# Регистрация пользователя
+# Create User
 @module.route('/register', methods=['POST', 'GET'])
 def register():
     form = RegisterForm()
@@ -35,7 +35,7 @@ def register():
     return render_template('registration/register.html', title='Регистрация', form=form)
 
 
-# Логин
+# Logging
 @module.route('/login', methods=['POST', 'GET'])
 def login():
     form = LoginForm()
@@ -58,7 +58,7 @@ def login():
     return render_template('registration/login.html', title='Авторизация', form=form)
 
 
-# Выход из аккаунта
+# Logout
 @module.route('/logout')
 @login_required
 def logout():

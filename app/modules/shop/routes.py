@@ -10,7 +10,7 @@ from . import module
 from .forms import ShopRegisterForm, ShopChangeInfoForm
 
 
-# Регистрация нового магазина
+# Create a new shop
 @module.route('/register', methods=['POST', 'GET'])
 @login_required
 def register():
@@ -47,7 +47,7 @@ def register():
     return render_template('shop/shop-register.html', title='Регистрация магазина', form=form)
 
 
-# Профиль магазина
+# Shop profile
 @module.route('/profile/<string:shop_name>')
 def profile(shop_name):
     shop = Shop.query.filter_by(name=shop_name).first_or_404()
@@ -61,7 +61,7 @@ def profile(shop_name):
                            logo_data=logo_data, seller=True)
 
 
-# Редактирование данных о магазине
+# Change shop data
 @module.route('change/<string:shop_name>', methods=['GET', 'POST'])
 @login_required
 def change_info(shop_name):
