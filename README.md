@@ -254,43 +254,6 @@ Azon uses JSON Web Tokens (JWT) for authentication. Include the following in you
 - **Authentication**: JWT required.
 - **Response**: JSON message indicating successful deletion.
 
-## Contributing
-
-We welcome contributions from the community! If you'd like to contribute, please follow these guidelines:
-
-1. **Fork the repository** on GitHub.
-2. **Clone your fork** locally:
-
-   ```bash
-   git clone https://github.com/yourusername/azon.git
-   ```
-
-3. **Create a new branch** for your feature or bugfix:
-
-   ```bash
-   git checkout -b feature-name
-   ```
-
-4. **Commit your changes** with clear messages:
-
-   ```bash
-   git commit -m "Description of the changes"
-   ```
-
-5. **Push your branch** to GitHub:
-
-   ```bash
-   git push origin feature-name
-   ```
-
-6. **Submit a pull request** to the main repository.
-
-Please ensure that your code follows our [style guidelines](STYLE_GUIDE.md) and includes relevant tests.
-
-## License
-
-Azon is open-source software licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
-
 ## Contact
 
 For any questions or suggestions, please reach out to us at:
