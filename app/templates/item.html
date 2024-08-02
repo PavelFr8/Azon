@@ -32,12 +32,12 @@
         {% if seller and shop.owner_id == current_user.id %}
         <div style="margin: 5px 12px;">
             <a href="{{ url_for('item.change', article=item.article) }}" class="btn btn-primary" style="width: fit-content; margin: auto; margin-bottom: 8px; display: block;">Изменить</a>
-            <button onclick="deleteItem('{{ url_for('api.delete_item', article=item.article) }}', {{ item.article }})" class="btn btn-danger" style="width: fit-content; margin: auto; display: block;">Удалить</button>
+            <button onclick="deleteItem('{{ url_for('azon_api.delete_item', article=item.article) }}', {{ item.article }})" class="btn btn-danger" style="width: fit-content; margin: auto; display: block;">Удалить</button>
         </div>
         {% endif %}
         {% if cart %}
         <div style="margin: 5px 12px;">
-            <button onclick="deleteFromCart('{{ url_for('api.delete_from_cart', article=item.article) }}', '{{ item.article }}', {{ item.price * item.amount }})" class="btn btn-danger" style="padding: .0001rem .29rem; position: absolute; top: 0%; right: 0%">✖</button>
+            <button onclick="deleteFromCart('{{ url_for('azon_api.delete_from_cart', article=item.article) }}', '{{ item.article }}', {{ item.price * item.amount }})" class="btn btn-danger" style="padding: .0001rem .29rem; position: absolute; top: 0%; right: 0%">✖</button>
            <p style="margin-bottom: 0rem;">Всего: {{ item.amount }} шт</p>
         </div>
         {% endif %}

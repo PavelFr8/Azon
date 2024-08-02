@@ -10,4 +10,4 @@ api = Api(module)
 
 csrf.exempt(module)
 
-from app.api.api import shop, errors
+from app.api.restful_api import shop, errors, images, login, items

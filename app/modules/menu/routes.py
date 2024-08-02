@@ -26,7 +26,7 @@ def index():
 # Страница "Стать продавцом"
 @module.route('/info')
 def info():
-    return render_template('menu/info.html', title='Программа продавцов')
+    return render_template('menu/become_a_seller.html', title='Программа продавцов')
 
 
 # Страница "О нас"

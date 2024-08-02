@@ -43,7 +43,7 @@ def register(shop_name):
                 db.session.add(item)
                 db.session.commit()
                 flash('Товар успешно зарегистрирован!', 'success')
-                return redirect(url_for('menu.index'))
+                return redirect(url_for('shop.profile', shop_name=shop_name))
             except Exception as e:
                 logger.error(f"Error registering item: {e}")
                 db.session.rollback()

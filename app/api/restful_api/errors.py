@@ -1,7 +1,7 @@
 from werkzeug.http import HTTP_STATUS_CODES
 from werkzeug.exceptions import HTTPException
 
-from app.api.api import module
+from app.api.restful_api import module
 
 
 def error_response(status_code, message=None):

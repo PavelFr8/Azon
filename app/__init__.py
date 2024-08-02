@@ -5,7 +5,6 @@ from flask_debugtoolbar import DebugToolbarExtension
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_wtf import CSRFProtect
-from flask_restful import Api
 from flask_jwt_extended import JWTManager
 
 from dotenv import load_dotenv
@@ -43,8 +42,8 @@ def create_app():
     app.register_blueprint(azon_api.module)
 
     # register azon REST api
-    import app.api.api as api
-    app.register_blueprint(api.module)
+    import app.api.restful_api as restful_api
+    app.register_blueprint(restful_api.module)
 
     # register errors handler
     import app.errors as errors
