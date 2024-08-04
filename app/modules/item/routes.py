@@ -77,7 +77,7 @@ def profile(article):
 
         categories = []
         for category in item.category_id.split(','):
-            if category != '17':
+            if category != '1':
                 categories.append(Category.query.get(category))
 
         return render_template('item/item-profile.html', item=item, title=f'{item.name}', logo_data=logo_data,
